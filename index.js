@@ -7,7 +7,7 @@ const path = require('path');
 let AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEwMGE3YTVlLWNlMTItNDU5MC05ZTEwLTE0MmViOWY3ZTkwMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJMR1RZUVoiLCJqdGkiOiIyYTc0MmQwYy0wNGU4LTQyN2MtOWVjMC1kY2NiZjU1MDBlNTIiLCJleHAiOjE3NTM1MTM0OTAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6IioifQ.H-gnWFes3Qyie-VPzuBcK94voFZ1jx5KMv1B3GsaXM4";
 const API_VERSION = "41";
 
-const PLACEHOLDER_SPRITE = 'Sprite/Pets/Tier-1/Cockroach.png';
+const PLACEHOLDER_SPRITE = 'i-dunno.png';
 const PLACEHOLDER_PERK = 'Sprite/Food/Tier-2/SleepingPill.png';
 
 const CANVAS_WIDTH = 1050;
@@ -24,7 +24,7 @@ const PERK_CODES = {
   },
   2: {
     name: "Peanut",
-    imagePath: "Sprite/Food/Tier-6/Peanut.webp"
+    imagePath: "Sprite/Food/Tier-6/Peanut.png"
   },
 
   5: {
@@ -173,7 +173,7 @@ function getBattleInfo(battle){
   for(let toy of battle["OpponentBoard"]["Rel"]["Items"]){
     if(toy !== null && toy["Enu"]){
       let toyId = toy["Enu"];
-      newBattle.oppBoard.toy.name = PETS[toyId].petName ?? "UNKNOWN TOY";
+      newBattle.oppBoard.toy.name = PETS[toyId] ? PETS[toyId].petName : "UNKNOWN TOY";
       newBattle.oppBoard.toy.level = toy["Lvl"];
     }
   }
@@ -220,6 +220,7 @@ function getPetInfo(petJSON){
 }
 
 async function drawPet(ctx, petJSON, x, y, flip){
+  console.log(petJSON.name, petJSON.imagePath);
   let petImage = await Canvas.loadImage(petJSON.imagePath);
   if(flip){
     ctx.save();
@@ -243,6 +244,7 @@ async function drawPet(ctx, petJSON, x, y, flip){
   }
 
   if(petJSON.perk){
+    console.log(petJSON.perkImagePath);
     let perkImage = await Canvas.loadImage(petJSON.perkImagePath);
     ctx.drawImage(perkImage, x + 30, y - 10, 30, 30);
   }
@@ -283,7 +285,7 @@ client.once(Events.ClientReady, async readyClient => {
     let row = r.split("\t");
     PETS[row[1]] = {
       petName: row[0],
-      imagePath: row.length >= 2 ? row[2] : PLACEHOLDER_SPRITE
+      imagePath: row.length > 2 ? row[2] : PLACEHOLDER_SPRITE
     };
   }
 

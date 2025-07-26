@@ -290,7 +290,7 @@ Sea Serpent	372	Sprite/Pets/Tier-6/SeaSerpent.png
 Abomination	373	Sprite/Pets/Tier-4/Abomination.png
 Skeleton Dog	374	Sprite/Pets/Tier-3/SkeletonDog.png
 Slime	375	Sprite/Pets/Tier-3/Slime.png
-Ogopogo	376	Sprite/Pets/Tier-2/Ogopogo.png
+Sphinx	376	Sprite/Pets/Tier-2/Sphinx.png
 Axehandle Hound	377	Sprite/Pets/Tier-3/AxehandleHound.png
 Ent	378	Sprite/Pets/Tier-1/Ant.png
 Tsuchinoko	379	Sprite/Pets/Tier-1/Tsuchinoko.png
@@ -298,7 +298,7 @@ Unicorn	380	Sprite/Pets/Tier-4/Unicorn.png
 Vampire Bat	381	Sprite/Pets/Tier-5/VampireBat.png
 Warf	382	Sprite/Pets/Tier-2/Warf.png
 Werewolf	383	Sprite/Pets/Tier-5/Werewolf.png
-Wyvern	385	Sprite/Pets/Tier-6/Wolverine.png
+Wyvern	385	Sprite/Pets/Tier-2/Wyvern.png
 Visitor	386	Sprite/Pets/Tier-4/Visitor.png
 Yeti	387	Sprite/Pets/Tier-6/Yeti.png
 Tahr	393	Sprite/Pets/Tier-4/Tahr.png
@@ -307,11 +307,11 @@ Hare	551	Sprite/Pets/Tier-3/Hare.png
 Pigeon	559	Sprite/Pets/Tier-1/Pigeon.png
 Bunyip	601	Sprite/Pets/Tier-1/Bunyip.png
 Mothman	604	Sprite/Pets/Tier-2/Mothman.png
-Thunderbird	605	Sprite/Pets/Tier-2/Thunderbird.png
+Thunderbird	610	Sprite/Pets/Tier-2/Thunderbird.png
 Sleipnir	606	Sprite/Pets/Tier-6/Sleipnir.png
 Tandgnost	607	Sprite/Pets/Tier-4/Tandgnost.png
 Tandgrisner	608	Sprite/Pets/Tier-4/Tandgrisner.png
-Nightcrawler	610	Sprite/Pets/Tier-2/NightCrawler.png
+Nightcrawler	605	Sprite/Pets/Tier-2/NightCrawler.png
 Cuddle Toad	611	Sprite/Pets/Tier-1/CuddleToad.png
 Old Dog	612	Sprite/Pets/Tier-5/BadDog.png
 Bad Dog	613	Sprite/Pets/Tier-5/BadDog.png
@@ -328,7 +328,7 @@ Cyclops	630	Sprite/Pets/Tier-4/Cyclops.png
 Golden Beetle	634	Sprite/Pets/Tier-2/GoldenBeetle.png
 Mana Beast	635	Sprite/Pets/Tier-3/ManaHound.png
 Team Spirit	636	Sprite/Pets/Tier-6/TeamSpirit.png
-Sphinx	639	Sprite/Pets/Tier-2/Sphinx.png
+Ogopogo	639	Sprite/Pets/Tier-2/Ogopogo.png
 Loveland Frogman	640	Sprite/Pets/Tier-5/LovelandFrogman.png
 Deer Lord	651	Sprite/Pets/Tier-3/DeerLord.png
 Jersey Devil	652	Sprite/Pets/Tier-6/JerseyDevil.png
