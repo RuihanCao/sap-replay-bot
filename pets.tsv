@@ -1,0 +1,420 @@
+Ant	0	Sprite/Pets/Tier-1/Ant.png
+Badger	2	Sprite/Pets/Tier-3/Badger.png
+Beaver	3	Sprite/Pets/Tier-1/Beaver.png
+Bison	5	Sprite/Pets/Tier-4/Bison.png
+Blowfish	7	Sprite/Pets/Tier-4/Blowfish.png
+Buffalo	8	Sprite/Pets/Tier-4/Buffalo.png
+Camel	10	Sprite/Pets/Tier-3/Camel.png
+Cat	11	Sprite/Pets/Tier-6/Cat.png
+Caterpillar	12	Sprite/Pets/Tier-4/Caterpillar.png
+Chicken	14	Sprite/Pets/Tier-5/Chicken.png
+Cow	15	Sprite/Pets/Tier-5/Cow.png
+Crab	16	Sprite/Pets/Tier-2/Crab.png
+Cricket	17	Sprite/Pets/Tier-1/Cricket.png
+Cockroach	18	Sprite/Pets/Tier-1/Cockroach.png
+Crocodile	19	Sprite/Pets/Tier-5/Crocodile.png
+Deer	20	Sprite/Pets/Tier-4/Deer.png
+Dodo	21	Sprite/Pets/Tier-3/Dodo.png
+Dog	22	Sprite/Pets/Tier-3/Dog.png
+Dolphin	23	Sprite/Pets/Tier-3/Dolphin.png
+Dove	24	Sprite/Pets/Tier-2/Dove.png
+Duck	26	Sprite/Pets/Tier-1/Duck.png
+Eagle	27	Sprite/Pets/Tier-5/Eagle.png
+Elephant	28	Sprite/Pets/Tier-3/Elephant.png
+Flamingo	29	Sprite/Pets/Tier-2/Flamingo.png
+Fly	30	Sprite/Pets/Tier-6/Fly.png
+Fish	32	Sprite/Pets/Tier-1/Fish.png
+Giraffe	33	Sprite/Pets/Tier-3/Giraffe.png
+Goat	34	Sprite/Pets/Tier-5/Goat.png
+Gorilla	36	Sprite/Pets/Tier-6/Gorilla.png
+Hedgehog	37	Sprite/Pets/Tier-2/Hedgehog.png
+Hippo	38	Sprite/Pets/Tier-4/Hippo.png
+Horse	39	Sprite/Pets/Tier-1/Horse.png
+Kangaroo	40	Sprite/Pets/Tier-2/Kangaroo.png
+Leopard	41	Sprite/Pets/Tier-6/Leopard.png
+Lion	42	Sprite/Pets/Tier-6/Lion.png
+Llama	44	Sprite/Pets/Tier-4/Llama.png
+Mammoth	45	Sprite/Pets/Tier-6/Mammoth.png
+Monkey	46	Sprite/Pets/Tier-5/Monkey.png
+Mosquito	47	Sprite/Pets/Tier-1/Mosquito.png
+Mouse	48	Sprite/Pets/Tier-1/Mouse.png
+Octopus	50	Sprite/Pets/Tier-6/Octopus.png
+Otter	51	Sprite/Pets/Tier-1/Otter.png
+Ox	52	Sprite/Pets/Tier-3/Ox.png
+Parrot	53	Sprite/Pets/Tier-4/Parrot.png
+Peacock	54	Sprite/Pets/Tier-2/Peacock.png
+Rhino	55	Sprite/Pets/Tier-5/Rhino.png
+Penguin	56	Sprite/Pets/Tier-4/Penguin.png
+Rat	57	Sprite/Pets/Tier-2/Rat.png
+Pig	59	Sprite/Pets/Tier-1/Pig.png
+Rabbit	60	Sprite/Pets/Tier-3/Rabbit.png
+Rooster	63	Sprite/Pets/Tier-5/Rooster.png
+Scorpion	65	Sprite/Pets/Tier-5/Scorpion.png
+Seal	66	Sprite/Pets/Tier-5/Seal.png
+Shrimp	67	Sprite/Pets/Tier-2/Shrimp.png
+Sheep	68	Sprite/Pets/Tier-3/Sheep.png
+Shark	69	Sprite/Pets/Tier-5/Shark.png
+Skunk	70	Sprite/Pets/Tier-4/Skunk.png
+Snail	72	Sprite/Pets/Tier-2/Snail.png
+Snake	73	Sprite/Pets/Tier-6/Snake.png
+Spider	74	Sprite/Pets/Tier-2/Spider.png
+Squirrel	75	Sprite/Pets/Tier-4/Squirrel.png
+Swan	76	Sprite/Pets/Tier-2/Swan.png
+Tiger	77	Sprite/Pets/Tier-6/Tiger.png
+Tyrannosaurus	78	Sprite/Pets/Tier-6/Tyrannosaurus.png
+Turkey	79	Sprite/Pets/Tier-5/Turkey.png
+Turtle	80	Sprite/Pets/Tier-4/Turtle.png
+Whale	81	Sprite/Pets/Tier-4/Whale.png
+Worm	82	Sprite/Pets/Tier-2/Worm.png
+Bat	87	Sprite/Pets/Tier-2/Bat.png
+Beetle	88	Sprite/Pets/Tier-1/Beetle.png
+Bluebird	89	Sprite/Pets/Tier-1/BlueBird.png
+Hatching Chick	91	Sprite/Pets/Tier-3/HatchingChick.png
+Ladybug	92	Sprite/Pets/Tier-1/LadyBug.png
+Lobster	93	Sprite/Pets/Tier-4/Lobster.png
+Microbe	94	Sprite/Pets/Tier-4/Microbe.png
+Owl	95	Sprite/Pets/Tier-3/Owl.png
+Poodle	96	Sprite/Pets/Tier-6/Poodle.png
+Puppy	97	Sprite/Pets/Tier-3/Puppy.png
+Sauropod	98	Sprite/Pets/Tier-6/Sauropod.png
+Tabby Cat	99	Sprite/Pets/Tier-2/TabbyCat.png
+Tropical Fish	100	Sprite/Pets/Tier-3/TropicalFish.png
+Boar	103	Sprite/Pets/Tier-6/Boar.png
+Dromedary	104	Sprite/Pets/Tier-2/Dromedary.png
+Anteater	105	Sprite/Pets/Tier-3/Anteater.png
+Fox	106	Sprite/Pets/Tier-5/Fox.png
+Panda	107	Sprite/Pets/Tier-2/Panda.png
+Polar Bear	108	Sprite/Pets/Tier-5/PolarBear.png
+Guinea Pig	109	Sprite/Pets/Tier-2/GuineaPig.png
+Hamster	110	Sprite/Pets/Tier-5/Hamster.png
+Donkey	111	Sprite/Pets/Tier-4/Donkey.png
+Koala	112	Sprite/Pets/Tier-2/Koala.png
+Duckling	113	Sprite/Pets/Tier-1/Duck.png
+Lioness	114	Sprite/Pets/Tier-6/Lioness.png
+Velociraptor	115	Sprite/Pets/Tier-6/Velociraptor.png
+Orca	116	Sprite/Pets/Tier-6/Orca.png
+Clownfish	117	Sprite/Pets/Tier-4/ClownFish.png
+Piranha	118	Sprite/Pets/Tier-6/Piranha.png
+Swordfish	119	Sprite/Pets/Tier-5/SwordFish.png
+Eel	120	Sprite/Pets/Tier-3/Eel.png
+Goldfish	121	Sprite/Pets/Tier-3/GoldFish.png
+Jellyfish	122	Sprite/Pets/Tier-2/JellyFish.png
+Hammer Shark	123	Sprite/Pets/Tier-6/Hammershark.png
+Komodo	124	Sprite/Pets/Tier-6/Komodo.png
+Ostrich	125	Sprite/Pets/Tier-6/Ostrich.png
+Orchid Mantis	126	Sprite/Pets/Tier-5/OrchidMantis.png
+Hawk	127	Sprite/Pets/Tier-4/Hawk.png
+Seagull	128	Sprite/Pets/Tier-4/Seagull.png
+Pelican	129	Sprite/Pets/Tier-5/Pelican.png
+Okapi	130	Sprite/Pets/Tier-3/Okapi.png
+Kiwi	131	Sprite/Pets/Tier-1/Kiwi.png
+Atlantic Puffin	132	Sprite/Pets/Tier-2/AtlanticPuffin.png
+Cassowary	133	Sprite/Pets/Tier-3/Cassowary.png
+Shoebill	134	Sprite/Pets/Tier-5/Shoebill.png
+Vulture	135	Sprite/Pets/Tier-5/Vulture.png
+Stork	136	Sprite/Pets/Tier-2/Stork.png
+Frigatebird	137	Sprite/Pets/Tier-2/Frigatebird.png
+Hummingbird	138	Sprite/Pets/Tier-1/Hummingbird.png
+Frog	139	Sprite/Pets/Tier-1/Frog.png
+Bear	140	Sprite/Pets/Tier-3/Bear.png
+Moth	141	Sprite/Pets/Tier-1/Moth.png
+Triceratops	142	Sprite/Pets/Tier-5/Triceratops.png
+Spinosaurus	143	Sprite/Pets/Tier-6/Spinosaurus.png
+Stegosaurus	144	Sprite/Pets/Tier-6/Stegosaurus.png
+Pug	145	Sprite/Pets/Tier-3/Pug.png
+Siberian Husky	146	Sprite/Pets/Tier-5/SiberianHusky.png
+Iguana	147	Sprite/Pets/Tier-2/Iguana.png
+Sabertooth	148	Sprite/Pets/Tier-6/SabertoothTiger.png
+Pillbug	149	Sprite/Pets/Tier-1/Pillbug.png
+Blobfish	150	Sprite/Pets/Tier-5/Blobfish.png
+Toucan	151	Sprite/Pets/Tier-2/Toucan.png
+Seahorse	152	Sprite/Pets/Tier-2/Seahorse.png
+Starfish	153	Sprite/Pets/Tier-5/Starfish.png
+Capybara	154	Sprite/Pets/Tier-3/Capybara.png
+Zebra	155	Sprite/Pets/Tier-5/Zebra.png
+Woodpecker	156	Sprite/Pets/Tier-5/Woodpecker.png
+Orangutan	157	Sprite/Pets/Tier-3/Orangutan.png
+Raccoon	158	Sprite/Pets/Tier-5/Raccoon.png
+Platypus	159	Sprite/Pets/Tier-4/Platypus.png
+Wasp	160	Sprite/Pets/Tier-3/Wasp.png
+Chinchilla	161	Sprite/Pets/Tier-1/Chinchilla.png
+Toad	162	Sprite/Pets/Tier-3/Toad.png
+Yak	163	Sprite/Pets/Tier-2/Yak.png
+Salamander	164	Sprite/Pets/Tier-2/Salamander.png
+Leech	165	Sprite/Pets/Tier-3/Leech.png
+Armadillo	166	Sprite/Pets/Tier-5/Armadillo.png
+Hyena	167	Sprite/Pets/Tier-5/Hyena.png
+Mole	168	Sprite/Pets/Tier-3/Mole.png
+Porcupine	169	Sprite/Pets/Tier-3/Porcupine.png
+Wolf	170	Sprite/Pets/Tier-5/Wolf.png
+Baboon	171	Sprite/Pets/Tier-3/Baboon.png
+Ferret	172	Sprite/Pets/Tier-1/Ferret.png
+Weasel	173	Sprite/Pets/Tier-3/Weasel.png
+Catfish	174	Sprite/Pets/Tier-6/Catfish.png
+Sealion	175	Sprite/Pets/Tier-4/Sealion.png
+Cuttlefish	176	Sprite/Pets/Tier-4/Cuttlefish.png
+Squid	177	Sprite/Pets/Tier-2/Squid.png
+Sting Ray	178	Sprite/Pets/Tier-5/Stingray.png
+Anglerfish	180	Sprite/Pets/Tier-6/Anglerfish.png
+Bird Of Paradise	181	Sprite/Pets/Tier-6/BirdOfParadise.png
+Beluga Whale	182	Sprite/Pets/Tier-5/BelugaWhale.png
+Chipmunk	184	Sprite/Pets/Tier-1/Chipmunk.png
+Gazelle	185	Sprite/Pets/Tier-2/Gazelle.png
+Highland Cow	186	Sprite/Pets/Tier-6/HighlandCow.png
+Opossum	187	Sprite/Pets/Tier-1/Opossum.png
+Bulldog	189	Sprite/Pets/Tier-1/Bulldog.png
+Mantis Shrimp	190	Sprite/Pets/Tier-6/MantisShrimp.png
+Sea Turtle	191	Sprite/Pets/Tier-2/SeaTurtle.png
+Manatee	192	Sprite/Pets/Tier-4/Manatee.png
+Aardvark	193	Sprite/Pets/Tier-3/Aardvark.png
+Alpaca	194	Sprite/Pets/Tier-6/Alpaca.png
+Crow	195	Sprite/Pets/Tier-4/Crow.png
+Dragonfly	196	Sprite/Pets/Tier-5/Dragonfly.png
+Emporer Tamarin	197	Sprite/Pets/Tier-3/EmperorTamarin.png
+Frilled Dragon	198	Sprite/Pets/Tier-1/FrilledDragon.png
+Jerboa	199	Sprite/Pets/Tier-4/Jerboa.png
+Lynx	200	Sprite/Pets/Tier-4/Lynx.png
+Lionfish	201	Sprite/Pets/Tier-6/Lionfish.png
+Moose	202	Sprite/Pets/Tier-5/Moose.png
+Meerkat	203	Sprite/Pets/Tier-3/Meerkat.png
+Marmoset	204	Sprite/Pets/Tier-1/Marmoset.png
+Reindeer	205	Sprite/Pets/Tier-6/Reindeer.png
+White Tiger	206	Sprite/Pets/Tier-6/WhiteTiger.png
+Wombat	207	Sprite/Pets/Tier-2/Wombat.png
+Tapir	208	Sprite/Pets/Tier-6/Tapir.png
+Walrus	209	Sprite/Pets/Tier-6/Walrus.png
+African Penguin	210	Sprite/Pets/Tier-2/AfricanPenguin.png
+Axolotl	212	Sprite/Pets/Tier-5/Axolotl.png
+Beluga Sturgeon	213	Sprite/Pets/Tier-2/BelugaSturgeon.png
+Betta Fish	214	Sprite/Pets/Tier-3/BettaFish.png
+Black Necked Stilt	215	Sprite/Pets/Tier-2/BlackNeckedStilt.png
+Chameleon	216	Sprite/Pets/Tier-4/Chameleon.png
+Cobra	217	Sprite/Pets/Tier-6/Cobra.png
+Cockatoo	218	Sprite/Pets/Tier-4/Cockatoo.png
+Crane	219	Sprite/Pets/Tier-5/Crane.png
+Door Head Ant	220	Sprite/Pets/Tier-2/DoorHeadAnt.png
+Egyptian Vulture	221	Sprite/Pets/Tier-5/EgyptianVulture.png
+Elephant Seal	222	Sprite/Pets/Tier-6/ElephantSeal.png
+Emu	223	Sprite/Pets/Tier-5/Emu.png
+Falcon	224	Sprite/Pets/Tier-4/Falcon.png
+Flea	225	Sprite/Pets/Tier-3/Flea.png
+Flying Fish	226	Sprite/Pets/Tier-3/FlyingFish.png
+Flying Squirrel	227	Sprite/Pets/Tier-3/FlyingSquirrel.png
+Guinea Fowl	228	Sprite/Pets/Tier-2/GuineaPig.png
+Gecko	229	Sprite/Pets/Tier-1/Gecko.png
+German Shepherd	230	Sprite/Pets/Tier-6/GermanShepard.png
+Gharial	231	Sprite/Pets/Tier-4/Gharial.png
+Goose	232	Sprite/Pets/Tier-1/Goose.png
+Groundhog	233	Sprite/Pets/Tier-1/Groundhog.png
+Hercules Beetle	234	Sprite/Pets/Tier-2/HerculesBeetle.png
+Hoopoe Bird	235	Sprite/Pets/Tier-3/HoopoeBird.png
+Lemur	236	Sprite/Pets/Tier-2/Lemur.png
+Lizard	237	Sprite/Pets/Tier-2/Lizard.png
+Macaque	238	Sprite/Pets/Tier-5/Macaque.png
+Magpie	239	Sprite/Pets/Tier-1/Magpie.png
+Manta Ray	240	Sprite/Pets/Tier-4/MantaRay.png
+Mongoose	241	Sprite/Pets/Tier-6/Mongoose.png
+Mosasaur	242	Sprite/Pets/Tier-5/Mosasaurus.png
+Musk Ox	245	Sprite/Pets/Tier-3/MuskOx.png
+Nyala	246	Sprite/Pets/Tier-5/Nyala.png
+Osprey	247	Sprite/Pets/Tier-3/Osprey.png
+Oyster	248	Sprite/Pets/Tier-6/Oyster.png
+Pangolin	249	Sprite/Pets/Tier-3/Pangolin.png
+Panther	250	Sprite/Pets/Tier-5/Panther.png
+Pied Tamarin	251	Sprite/Pets/Tier-1/PiedTamarin.png
+Poison Dart Frog	252	Sprite/Pets/Tier-4/PoisonDartFrog.png
+Pteranodon	253	Sprite/Pets/Tier-6/Pteranodon.png
+Puma	254	Sprite/Pets/Tier-6/Puma.png
+Robin	255	Sprite/Pets/Tier-2/Robin.png
+Royal Flycatcher	256	Sprite/Pets/Tier-3/RoyalFlycatcher.png
+Saiga Antelope	257	Sprite/Pets/Tier-4/SaigaAntelope.png
+Sea Urchin	258	Sprite/Pets/Tier-2/SeaUrchin.png
+Secretary Bird	259	Sprite/Pets/Tier-5/SecretaryBird.png
+Silkmoth	260	Sprite/Pets/Tier-1/Silkmoth.png
+Silver Fox	261	Sprite/Pets/Tier-5/SilverFox.png
+Slug	262	Sprite/Pets/Tier-4/Slug.png
+Stoat	263	Sprite/Pets/Tier-2/Stoat.png
+Surgeon Fish	264	Sprite/Pets/Tier-3/SurgeonFish.png
+Vaquita	265	Sprite/Pets/Tier-4/Vaquita.png
+Warthog	266	Sprite/Pets/Tier-6/Warthog.png
+Whale Shark	267	Sprite/Pets/Tier-4/WhaleShark.png
+Wildebeest	268	Sprite/Pets/Tier-6/Wildebeest.png
+Wolverine	269	Sprite/Pets/Tier-6/Wolverine.png
+Blue Ringed Octopus	271	Sprite/Pets/Tier-5/BlueRingedOctopus.png
+Cone Snail	272	Sprite/Pets/Tier-1/ConeSnail.png
+Doberman	273	Sprite/Pets/Tier-4/Doberman.png
+Fire Ant	274	Sprite/Pets/Tier-5/FireAnt.png
+Grizzly Bear	275	Sprite/Pets/Tier-6/GrizzlyBear.png
+Nurse Shark	276	Sprite/Pets/Tier-5/NurseShark.png
+Snapping Turtle	277	Sprite/Pets/Tier-5/SnappingTurtle.png
+Stonefish	278	Sprite/Pets/Tier-5/Stonefish.png
+Tiger Beetle	330	Sprite/Pets/Tier-1/Beetle.png
+Anubis	331	Sprite/Pets/Tier-4/Anubis.png
+Basilisk	332	Sprite/Pets/Tier-1/Basilisk.png
+Behemoth	333	Sprite/Pets/Tier-6/Behemoth.png
+Bigfoot	334	Sprite/Pets/Tier-2/Bigfoot.png
+Great One	335	Sprite/Pets/Tier-6/Behemoth.png
+Calgreyhound	336	Sprite/Pets/Tier-3/Calygreyhound.png
+Cerberus	337	Sprite/Pets/Tier-6/Cerberus.png
+Chimera	338	Sprite/Pets/Tier-4/Chimera.png
+Chupacabra	339	Sprite/Pets/Tier-2/Chupacabra.png
+Cockatrice	340	Sprite/Pets/Tier-6/Cockatrice.png
+Drop Bear	341	Sprite/Pets/Tier-2/DropBear.png
+Fairy	342	Sprite/Pets/Tier-4/Fairy.png
+Frost Wolf	344	Sprite/Pets/Tier-2/FrostWolf.png
+Gargoyle	345	Sprite/Pets/Tier-2/Gargoyle.png
+Ghost Kitten	346	Sprite/Pets/Tier-2/GhostKitten.png
+Griffin	348	Sprite/Pets/Tier-3/Griffin.png
+Brain Cramp	349	Sprite/Pets/Tier-5/LovelandFrogman.png
+Hippocampus	350	Sprite/Pets/Tier-5/Hippocampus.png
+Hydra	352	Sprite/Pets/Tier-6/Hydra.png
+Jackalope	353	Sprite/Pets/Tier-2/Jackalope.png
+Kitsune	354	Sprite/Pets/Tier-5/Kitsune.png
+Kraken	355	Sprite/Pets/Tier-4/Kraken.png
+Leviathan	356	Sprite/Pets/Tier-6/Leviathan.png
+Mandrake	357	Sprite/Pets/Tier-3/Mandrake.png
+Manticore	358	Sprite/Pets/Tier-6/Manticore.png
+Mimic	359	Sprite/Pets/Tier-4/Mimic.png
+Minotaur	360	Sprite/Pets/Tier-4/Minotaur.png
+Murmel	362	Sprite/Pets/Tier-1/Murmel.png
+Nessie	363	Sprite/Pets/Tier-5/Nessie.png
+Ouroboros	364	Sprite/Pets/Tier-3/Ouroboros.png
+Pegasus	365	Sprite/Pets/Tier-4/Pegasus.png
+Phoenix	366	Sprite/Pets/Tier-6/Phoenix.png
+Quetzalcoatl	367	Sprite/Pets/Tier-6/Quetzalcoatl.png
+Red Dragon	368	Sprite/Pets/Tier-5/RedDragon.png
+Roc	369	Sprite/Pets/Tier-4/Roc.png
+Salmon Of Knowledge	370	Sprite/Pets/Tier-5/SalmonOfWisdom.png
+Worm Of Sand	371	Sprite/Pets/Tier-4/WormOfSand.png
+Sea Serpent	372	Sprite/Pets/Tier-6/SeaSerpent.png
+Abomination	373	Sprite/Pets/Tier-4/Abomination.png
+Skeleton Dog	374	Sprite/Pets/Tier-3/SkeletonDog.png
+Slime	375	Sprite/Pets/Tier-3/Slime.png
+Ogopogo	376	Sprite/Pets/Tier-2/Ogopogo.png
+Axehandle Hound	377	Sprite/Pets/Tier-3/AxehandleHound.png
+Ent	378	Sprite/Pets/Tier-1/Ant.png
+Tsuchinoko	379	Sprite/Pets/Tier-1/Tsuchinoko.png
+Unicorn	380	Sprite/Pets/Tier-4/Unicorn.png
+Vampire Bat	381	Sprite/Pets/Tier-5/VampireBat.png
+Warf	382	Sprite/Pets/Tier-2/Warf.png
+Werewolf	383	Sprite/Pets/Tier-5/Werewolf.png
+Wyvern	385	Sprite/Pets/Tier-6/Wolverine.png
+Visitor	386	Sprite/Pets/Tier-4/Visitor.png
+Yeti	387	Sprite/Pets/Tier-6/Yeti.png
+Tahr	393	Sprite/Pets/Tier-4/Tahr.png
+Mandrill	405	Sprite/Pets/Tier-2/Mandrill.png
+Hare	551	Sprite/Pets/Tier-3/Hare.png
+Pigeon	559	Sprite/Pets/Tier-1/Pigeon.png
+Bunyip	601	Sprite/Pets/Tier-1/Bunyip.png
+Mothman	604	Sprite/Pets/Tier-2/Mothman.png
+Thunderbird	605	Sprite/Pets/Tier-2/Thunderbird.png
+Sleipnir	606	Sprite/Pets/Tier-6/Sleipnir.png
+Tandgnost	607	Sprite/Pets/Tier-4/Tandgnost.png
+Tandgrisner	608	Sprite/Pets/Tier-4/Tandgrisner.png
+Nightcrawler	610	Sprite/Pets/Tier-2/NightCrawler.png
+Cuddle Toad	611	Sprite/Pets/Tier-1/CuddleToad.png
+Old Dog	612	Sprite/Pets/Tier-5/BadDog.png
+Bad Dog	613	Sprite/Pets/Tier-5/BadDog.png
+Questing Beast	616	Sprite/Pets/Tier-6/QuestingBeast.png
+Sneaky Egg	617	Sprite/Pets/Tier-1/SneakyEgg.png
+Pixiu	619	Sprite/Pets/Tier-5/Pixiu.png
+Barghest	621	Sprite/Pets/Tier-1/Barghest.png
+Rootling	622	Sprite/Pets/Tier-4/Rootling.png
+Lucky Kitten	623	Sprite/Pets/Tier-3/LuckyCat.png
+Foo Dog	625	Sprite/Pets/Tier-3/FooDog.png
+Alchemedes	626	Sprite/Pets/Tier-1/Alchemedes.png
+Baku	628	Sprite/Pets/Tier-1/Baku.png
+Cyclops	630	Sprite/Pets/Tier-4/Cyclops.png
+Golden Beetle	634	Sprite/Pets/Tier-2/GoldenBeetle.png
+Mana Beast	635	Sprite/Pets/Tier-3/ManaHound.png
+Team Spirit	636	Sprite/Pets/Tier-6/TeamSpirit.png
+Sphinx	639	Sprite/Pets/Tier-2/Sphinx.png
+Loveland Frogman	640	Sprite/Pets/Tier-5/LovelandFrogman.png
+Deer Lord	651	Sprite/Pets/Tier-3/DeerLord.png
+Jersey Devil	652	Sprite/Pets/Tier-6/JerseyDevil.png
+Fur-Bearing Trout	653	Sprite/Pets/Tier-3/FurBearingTrout.png
+Tatzelwurm	654	Sprite/Pets/Tier-3/Tatzelwurm.png
+Kappa	655	Sprite/Pets/Tier-5/Kappa.png
+Boitata	656	Sprite/Pets/Tier-5/Boitata.png
+Nurikabe	657	Sprite/Pets/Tier-5/Nurikabe.png
+Dragon	25	Sprite/Pets/Tier-6/Dragon.png
+Bus	85	Sprite/Pets/Tier-1/Bush.png
+Oven Mitts	311	Sprite/Pets/Tier-1/SneakyEgg.png
+Flashlight	484	Sprite/Pets/Tier-1/Firefly.png
+Tennis Ball	478	Sprite/Pets/Tier-1/Bush.png
+Plastic Saw	789	Sprite/Pets/Tier-5/SwordFish.png
+Stinky Sock	513	Sprite/Pets/Tier-4/Skunk.png
+Ammonite	536	Sprite/Pets/Tier-6/Ammonite.png
+Bass 	537	Sprite/Pets/Tier-2/Bass.png
+Cardinal 	539	Sprite/Pets/Tier-3/Cardinal.png
+Chihuahua	541	Sprite/Pets/Tier-1/Chihuahua.png
+DumboOctopus	545	Sprite/Pets/Tier-2/DumboOctopus.png
+Elk	546	Sprite/Pets/Tier-4/Elk.png
+FairyArmadillo	547	Sprite/Pets/Tier-4/FairyArmadillo.png
+Firefly	548	Sprite/Pets/Tier-1/Firefly.png
+Fossa	549	Sprite/Pets/Tier-4/Fossa.png
+Ibex	553	Sprite/Pets/Tier-5/Ibex.png
+Pheasant	558	Sprite/Pets/Tier-1/Pheasant.png
+RealVelociraptor	561	Sprite/Pets/Tier-6/RealVelociraptor.png
+Siamese	565	Sprite/Pets/Tier-4/Siamese.png
+Sparrow	567	Sprite/Pets/Tier-4/Sparrow.png
+Tuna	572	Sprite/Pets/Tier-3/Tuna.png
+ShimaEnaga	803	Sprite/Pets/Tier-2/ShimaEnaga.png
+TogianBabirusa	713
+Takhi	715
+SnowLeopard	716
+Hirola	717
+GoldenTamarin	720
+Bilby	758
+AfricanWildDog	388
+AmamiRabbit	389
+AmazonRiverDolphin	390
+AmsterdamAlbatross	391
+Angelshark	392
+AraripeManakin	394
+AyeAye	395
+BanggaiCardinalfish	396
+BayCat	397
+BlackRhino	398
+BlueWhale	399
+BlueThroatedMacaw	400
+BombusDahlbomii	401
+Bonobo	402
+CaliforniaCondor	403
+DarwinsFox	404
+EthiopianWolf	406
+EuropeanMink	407
+FanMussel	408
+GeometricTortoise	409
+GiantOtter	410
+GiantPangasius	411
+GiantTortoise	412
+GreenSeaTurtle	413
+HawaiianMonkSeal	414
+HelmetedHornbill	415
+HumpheadWrasse	416
+IliPika	417
+IriomoteCat	418
+Kakapo	419
+LongcombSawfish	420
+MalayTapir	421
+MonkeyFacedBat	422
+PaintedTerrapin	423
+PhilippineEagle	424
+ProboscisMonkey	425
+PygmyHippo	426
+PygmyHog	427
+RedPanda	428
+RolowayMonkey	429
+SakerFalcon	430
+Saola	431
+SilkySifaka	432
+SpoonBilledSandpiper	433
+SumatranTiger	434
+TaitaShrew	435
+TaitaThrush	436
+TasmanianDevil	437
+ToothBilledPigeon	438
+Tucuxi	439
+VolcanoSnail	440
+WhiteBelliedHeron	441
