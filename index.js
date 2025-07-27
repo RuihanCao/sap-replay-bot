@@ -14,6 +14,8 @@ const CANVAS_WIDTH = 1100;
 const PET_WIDTH = 50;
 const BATTLE_HEIGHT = 125;
 
+const A_DAY_IN_MS = 1000 * 60 * 60 * 24;
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 let rawPets = JSON.parse(fs.readFileSync("pets.json"));
 // Index it so it's faster!
@@ -222,7 +224,7 @@ async function drawToy(ctx, toyJSON, x, y){
   );
 }
 
-client.once(Events.ClientReady, async readyClient => {
+async function login(){
   let loginToken = await fetch(`https://api.teamwood.games/0.${API_VERSION}/api/user/login`, {
     method: "POST",
     body: JSON.stringify({
@@ -238,9 +240,14 @@ client.once(Events.ClientReady, async readyClient => {
   if(loginToken.ok){
     let responseJSON = await loginToken.json();
     AUTH_TOKEN = responseJSON["Token"]; 
-    console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+    console.log(`Ready! Logged in`);
     console.log(PETS[0]);
   }
+}
+
+client.once(Events.ClientReady, async readyClient => {
+  await login();
+  setInterval(login, A_DAY_IN_MS);
 });
 
 client.on('messageCreate', async (message) => {
