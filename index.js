@@ -164,14 +164,14 @@ async function drawPet(ctx, petJSON, x, y, flip){
     x + 3 * PET_WIDTH/4,
     y + PET_WIDTH + 20
   );
-  ctx.font = "12px sans-serif";
+  ctx.font = "12px Arial";
   ctx.fillStyle = "grey";
   ctx.fillText(
     "Lvl",
     x,
     y - 6
   );
-  ctx.font = "18px sans-serif";
+  ctx.font = "18px Arial";
   ctx.fillStyle = "orange";
   ctx.fillText(
     petJSON.level,
@@ -214,7 +214,7 @@ async function drawToy(ctx, toyJSON, x, y){
     PET_WIDTH
   );
   ctx.fillStyle = "black";
-  ctx.font = "12px sans-serif";
+  ctx.font = "12px Arial";
   ctx.fillText(
     `Lv${toyJSON.level}`,
     x + PET_WIDTH/2,
@@ -296,7 +296,7 @@ client.on('messageCreate', async (message) => {
   ctx.fillStyle = "#FFFFFF";
   ctx.textAlign = "center";
   ctx.fillRect(0, 0, CANVAS_WIDTH, battles.length * BATTLE_HEIGHT);
-  ctx.font = "18px sans-serif";
+  ctx.font = "18px Arial";
 
   let turnNumberIconSize = 25 + PET_WIDTH * 2 + 15;
 
