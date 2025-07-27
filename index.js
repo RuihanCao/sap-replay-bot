@@ -125,7 +125,6 @@ function getPetInfo(petJSON){
 }
 
 async function drawPet(ctx, petJSON, x, y, flip){
-  console.log(petJSON.name, petJSON.imagePath);
   let petImage = await Canvas.loadImage(petJSON.imagePath);
   if(flip){
     ctx.save();
@@ -149,7 +148,6 @@ async function drawPet(ctx, petJSON, x, y, flip){
   }
 
   if(petJSON.perk){
-    console.log(petJSON.perkImagePath);
     let perkImage = await Canvas.loadImage(petJSON.perkImagePath);
     ctx.drawImage(perkImage, x + 30, y - 10, 30, 30);
   }
@@ -166,14 +164,14 @@ async function drawPet(ctx, petJSON, x, y, flip){
     x + 3 * PET_WIDTH/4,
     y + PET_WIDTH + 20
   );
-  ctx.font = "12px Arial";
+  ctx.font = "12px sans-serif";
   ctx.fillStyle = "grey";
   ctx.fillText(
     "Lvl",
     x,
     y - 6
   );
-  ctx.font = "18px Arial";
+  ctx.font = "18px sans-serif";
   ctx.fillStyle = "orange";
   ctx.fillText(
     petJSON.level,
@@ -216,7 +214,7 @@ async function drawToy(ctx, toyJSON, x, y){
     PET_WIDTH
   );
   ctx.fillStyle = "black";
-  ctx.font = "12px Arial";
+  ctx.font = "12px sans-serif";
   ctx.fillText(
     `Lv${toyJSON.level}`,
     x + PET_WIDTH/2,
@@ -237,11 +235,9 @@ client.once(Events.ClientReady, async readyClient => {
       "authority": "api.teamwood.games"
     }
   });
-  console.log(loginToken);
   if(loginToken.ok){
     let responseJSON = await loginToken.json();
     AUTH_TOKEN = responseJSON["Token"]; 
-    console.log(AUTH_TOKEN);
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
     console.log(PETS[0]);
   }
@@ -250,7 +246,6 @@ client.once(Events.ClientReady, async readyClient => {
 client.on('messageCreate', async (message) => {
   // check whether message contains the code format
   let participationId;
-  console.log("Message received");
   if(!(message.content.includes("{") && message.content.includes("}"))){
     return;
   }
@@ -267,7 +262,6 @@ client.on('messageCreate', async (message) => {
   }
 
   // Request replay data from server
-  console.log(`Bearer ${AUTH_TOKEN}`);
   const options = {
     method: "POST",
     headers: {
@@ -282,7 +276,6 @@ client.on('messageCreate', async (message) => {
     })
   };
   let rawReplay = await fetch(`https://api.teamwood.games/0.${API_VERSION}/api/playback/participation`, options);
-  console.log(rawReplay);
   let replay = await rawReplay.json();
   let actions = replay["Actions"];
   let battles = [];
@@ -303,7 +296,7 @@ client.on('messageCreate', async (message) => {
   ctx.fillStyle = "#FFFFFF";
   ctx.textAlign = "center";
   ctx.fillRect(0, 0, CANVAS_WIDTH, battles.length * BATTLE_HEIGHT);
-  ctx.font = "18px Arial";
+  ctx.font = "18px sans-serif";
 
   let turnNumberIconSize = 25 + PET_WIDTH * 2 + 15;
 
