@@ -10,134 +10,36 @@ const API_VERSION = "41";
 const PLACEHOLDER_SPRITE = 'i-dunno.png';
 const PLACEHOLDER_PERK = 'Sprite/Food/Tier-2/SleepingPill.png';
 
-const CANVAS_WIDTH = 1050;
+const CANVAS_WIDTH = 1100;
 const PET_WIDTH = 50;
 const BATTLE_HEIGHT = 125;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+let rawPets = JSON.parse(fs.readFileSync("pets.json"));
+// Index it so it's faster!
 let PETS = {};
+for(let pet of rawPets){
+  PETS[pet.Id] = pet;
+}
 
-const PERK_CODES = {
-  1: {
-    name: "Mushroom",
-    imagePath: "Sprite/Food/Tier-6/Mushroom.png"
-  },
-  2: {
-    name: "Peanut",
-    imagePath: "Sprite/Food/Tier-6/Peanut.png"
-  },
+let rawPerks = JSON.parse(fs.readFileSync("perks.json"));
+let PERKS = {};
+for(let perk of rawPerks){
+  PERKS[perk.Id] = perk;
+}
 
-  5: {
-    name: "Chili",
-    imagePath: "Sprite/Food/Tier-5/Chili.png"
-  },
-  6: {
-    name: "Meat Bone",
-    imagePath: "Sprite/Food/Tier-2/MeatBone.png"
-  },
-  7: {
-    name: "Cherry",
-    imagePath: "Sprite/Food/Tier-2/Cherries.png"
-  },
-  8: {
-    name: "Honey",
-    imagePath: "Sprite/Food/Tier-1/Honey.png"
-  },
-  9: {
-    name: "Garlic",
-    imagePath: "Sprite/Food/Tier-3/Garlic.png",
-  },
-
-  12: {
-    name: "Steak",
-    imagePath: "Sprite/Food/Tier-6/Steak.png"
-  },
-  13: {
-    name: "Melon",
-    imagePath: "Sprite/Food/Tier-6/Melon.png"
-  },
-  14: {
-    name: "Strawberry",
-    imagePath: "Sprite/Food/Tier-1/Strawberry.png"
-  },
-
-  20: {
-    name: "Croissant",
-    imagePath: "Sprite/Food/Tier-3/Croissant.png"
-  },
-
-  22: {
-    name: "Lemon",
-    imagePath: "Sprite/Food/Tier-5/Lemon.png"
-  },
-  23: {
-    name: "Cheese",
-    imagePath: "Sprite/Food/Tier-4/Cheese.png"
-  },
-
-  25: {
-    name: "Banana",
-    imagePath: "Sprite/Food/Tier-4/Banana.png"
-  },
-
-  30: {
-    name: "Chocolate Cake",
-    imagePath: "Sprite/Food/Tier-2/ChocolateCake.png"
-  },
-
-  33: {
-    name: "Pita Bread",
-    imagePath: "Sprite/Food/Tier-6/PitaBread.png"
-  },
-  34: {
-    name: "Tomato",
-    imagePath: "Sprite/Food/Tier-6/Tomato.png"
-  },
-  35: {
-    name: "Pancakes",
-    imagePath: "Sprite/Food/Tier-6/Pancakes.png"
-  },
-
-  39: {
-    name: "Pie",
-    imagePath: "Sprite/Food/Tier-4/Pie.png"
-  },
-
-  45: {
-    name: "Durian",
-    imagePath: "Sprite/Food/Tier-5/Durian.png"
-  },
-  46: {
-    name: "Fig",
-    imagePath: "Sprite/Food/Tier-3/Fig.png"
-  },
-
-  64: {
-    name: "Baguette",
-    imagePath: "Sprite/Food/Tier-4/Baguette.png"
-  },
-
-  67: {
-    name: "Caramel",
-    imagePath: "Sprite/Food/Tier-2/Caramel.png"
-  },
-  68: {
-    name: "Eucalyptus",
-    imagePath: PLACEHOLDER_PERK
-  },
-
-  72: {
-    name: "Seaweed",
-    imagePath: "Sprite/Food/Tier-2/Seaweed.png"
-  }
-};
+let rawToys = JSON.parse(fs.readFileSync("toys.json"));
+let TOYS = {};
+for(let toy of rawToys){
+  TOYS[toy.Id] = toy;
+}
 
 function getBattleInfo(battle){
   let newBattle = {};
   newBattle.playerBoard = {
     boardPets: [],
     toy: {
-      name: "",
+      imagePath: null,
       level: 0
     }
   };
@@ -145,7 +47,7 @@ function getBattleInfo(battle){
   newBattle.oppBoard = {
     boardPets: [],
     toy: {
-      name: "",
+      imagePath: null,
       level: 0
     }
   };
@@ -159,7 +61,7 @@ function getBattleInfo(battle){
   for(let toy of battle["UserBoard"]["Rel"]["Items"]){
     if(toy !== null && toy["Enu"]){
       let toyId = toy["Enu"];
-      newBattle.playerBoard.toy.name = PETS[toyId] ? PETS[toyId].petName : "UNKNOWN TOY";
+      newBattle.playerBoard.toy.imagePath = TOYS[toyId] ? `Sprite/Toys/${TOYS[toyId].NameId}.png` : PLACEHOLDER_SPRITE;
       newBattle.playerBoard.toy.level = toy["Lvl"];
     }
   }
@@ -173,7 +75,7 @@ function getBattleInfo(battle){
   for(let toy of battle["OpponentBoard"]["Rel"]["Items"]){
     if(toy !== null && toy["Enu"]){
       let toyId = toy["Enu"];
-      newBattle.oppBoard.toy.name = PETS[toyId] ? PETS[toyId].petName : "UNKNOWN TOY";
+      newBattle.oppBoard.toy.imagePath = TOYS[toyId] ? `Sprite/Toys/${TOYS[toyId].NameId}.png` : PLACEHOLDER_SPRITE;
       newBattle.oppBoard.toy.level = toy["Lvl"];
     }
   }
@@ -182,14 +84,15 @@ function getBattleInfo(battle){
 
 function getPetInfo(petJSON){
   const petId = Number(petJSON["Enu"] ?? 0);
-  const petName = PETS[petId] ? PETS[petId].petName : "Token Pet";
+  const petName = PETS[petId] ? PETS[petId].Name : "Token Pet";
   const petLevel = petJSON["Lvl"];
+  const petExperience = petJSON["Exp"] ?? 0;
   const petAtk = petJSON["At"]["Perm"];
   const petHp = petJSON["Hp"]["Perm"];
   const petTempAtk = petJSON["At"]["Temp"] ?? 0;
   const petTempHp = petJSON["Hp"]["Temp"] ?? 0;
   const petPerkId = petJSON["Perk"] ?? -1;
-  const petImagePath = PETS[petId] ? PETS[petId].imagePath : PLACEHOLDER_SPRITE;
+  const petImagePath = PETS[petId] ? `Sprite/Pets/${PETS[petId].NameId}.png` : PLACEHOLDER_SPRITE;
   if(petPerkId === -1){
     return {
       "name": petName,
@@ -198,13 +101,14 @@ function getPetInfo(petJSON){
       "tempAttack": petTempAtk,
       "tempHealth": petTempHp,
       "level": petLevel,
+      "xp": petExperience,
       "perk": null,
       "imagePath": petImagePath,
       "perkImagePath": null
     };
   }else{
-    let perkName = PERK_CODES[petPerkId] ? PERK_CODES[petPerkId].name : "UNKNOWN PERK";
-    let perkImage = PERK_CODES[petPerkId] ? PERK_CODES[petPerkId].imagePath : PLACEHOLDER_PERK;
+    let perkName = PERKS[petPerkId] ? PERKS[petPerkId].Name : "UNKNOWN PERK";
+    let perkImage = PERKS[petPerkId] ? `Sprite/Food/${PERKS[petPerkId].NameId}.png` : PLACEHOLDER_PERK;
     return {
       "name": petName,
       "attack": petAtk,
@@ -212,6 +116,7 @@ function getPetInfo(petJSON){
       "tempAttack": petTempAtk,
       "tempHealth": petTempHp,
       "level": petLevel,
+      "xp": petExperience,
       "perk": perkName,
       "imagePath": petImagePath,
       "perkImagePath": perkImage
@@ -275,20 +180,51 @@ async function drawPet(ctx, petJSON, x, y, flip){
     x + 18,
     y - 7.5
   );
+
+  if(petJSON.xp < 2){
+    for(let i = 0; i < 2; i++){
+      ctx.beginPath();
+      if(i < petJSON.xp){
+        ctx.fillStyle = "orange";
+      }else{
+        ctx.fillStyle = "grey";
+      }
+      ctx.roundRect(x - 9 + i * 16, y - 2, 14, 6, 2);
+      ctx.fill();
+    }
+  }else{
+    for(let i = 0; i < 3; i++){
+      ctx.beginPath();
+      if(i < petJSON.xp - 2){
+        ctx.fillStyle = "orange";
+      }else{
+        ctx.fillStyle = "grey";
+      }
+      ctx.roundRect(x - 9 + i * 12, y - 2, 10, 6, 2);
+      ctx.fill();
+    }
+  }
+}
+
+async function drawToy(ctx, toyJSON, x, y){
+  let toyImage = await Canvas.loadImage(toyJSON.imagePath);
+  ctx.drawImage(
+    toyImage,
+    x,
+    y,
+    PET_WIDTH,
+    PET_WIDTH
+  );
+  ctx.fillStyle = "black";
+  ctx.font = "12px Arial";
+  ctx.fillText(
+    `Lv${toyJSON.level}`,
+    x + PET_WIDTH/2,
+    y + 3 * PET_WIDTH/2
+  );
 }
 
 client.once(Events.ClientReady, async readyClient => {
-  let raw_pets = fs.readFileSync("pets.tsv", {encoding: 'utf-8'});
-  let rows = raw_pets.split("\n");
-  console.log(rows.length);
-  for(let r of rows){
-    let row = r.split("\t");
-    PETS[row[1]] = {
-      petName: row[0],
-      imagePath: row.length > 2 ? row[2] : PLACEHOLDER_SPRITE
-    };
-  }
-
   let loginToken = await fetch(`https://api.teamwood.games/0.${API_VERSION}/api/user/login`, {
     method: "POST",
     body: JSON.stringify({
@@ -385,11 +321,28 @@ client.on('messageCreate', async (message) => {
       await drawPet(ctx, petJSON, baseXPosition, baseYPosition, true);
     }
 
+    if(battles[i].playerBoard.toy.imagePath){
+      drawToy(
+        ctx,
+        battles[i].playerBoard.toy,
+        (5) * (PET_WIDTH + 25) + turnNumberIconSize,
+        baseYPosition
+      )
+    }
 
     for(let x = 0; x < battles[i].oppBoard.boardPets.length; x++){
       let baseXPosition = CANVAS_WIDTH - (x * (PET_WIDTH + 25) + PET_WIDTH + 25);
       let petJSON = battles[i].oppBoard.boardPets[x];
       await drawPet(ctx, petJSON, baseXPosition, baseYPosition, false);
+    }
+
+    if(battles[i].oppBoard.toy.imagePath){
+      drawToy(
+        ctx,
+        battles[i].oppBoard.toy,
+        CANVAS_WIDTH - ((5 + 1) * (PET_WIDTH + 25)),
+        baseYPosition
+      )
     }
   }
   message.reply({files: [{attachment: canvas.toBuffer(), name: "replay.png"}]});
