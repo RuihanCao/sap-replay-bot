@@ -10,11 +10,17 @@ const API_VERSION = "41";
 const PLACEHOLDER_SPRITE = 'i-dunno.png';
 const PLACEHOLDER_PERK = 'Sprite/Food/Tier-2/SleepingPill.png';
 
-const CANVAS_WIDTH = 1100;
+const CANVAS_WIDTH = 1250;
 const PET_WIDTH = 50;
 const BATTLE_HEIGHT = 125;
 
 const A_DAY_IN_MS = 1000 * 60 * 60 * 24;
+
+const BATTLE_OUTCOMES = {
+  WIN: 1,
+  LOSS: 2,
+  TIE: 3
+};
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 let rawPets = JSON.parse(fs.readFileSync("pets.json"));
@@ -53,6 +59,9 @@ function getBattleInfo(battle){
       level: 0
     }
   };
+
+  newBattle.outcome = battle["Outcome"];
+  newBattle.opponentName = battle["Opponent"]["DisplayName"];
 
   for(let petJSON of battle["UserBoard"]["Mins"]["Items"]){
     if(petJSON !== null){
@@ -285,7 +294,10 @@ client.on('messageCreate', async (message) => {
   let rawReplay = await fetch(`https://api.teamwood.games/0.${API_VERSION}/api/playback/participation`, options);
   let replay = await rawReplay.json();
   let actions = replay["Actions"];
+  let maxLives = replay["GenesisModeModel"] ? JSON.parse(replay["GenesisModeModel"])["MaxLives"] : 5;
+  let currentLives = maxLives;
   let battles = [];
+  let battleOpponentInfo = [];
   for(let i = 0; i < actions.length; i++){
     if(actions[i]["Type"] === 0){
       let battle = JSON.parse(actions[i]["Battle"]);
@@ -294,6 +306,10 @@ client.on('messageCreate', async (message) => {
       // let opponentName = battle["Opponent"]["DisplayName"];
       // let turnNumber = battle["UserBoard"]["Tur"];
       battles.push(getBattleInfo(battle));
+    }
+    if(actions[i]["Type"] === 1){
+      let opponentInfo = JSON.parse(actions[i]["Mode"])["Opponents"];
+      battleOpponentInfo.push(opponentInfo);
     }
   }
 
@@ -305,18 +321,50 @@ client.on('messageCreate', async (message) => {
   ctx.fillRect(0, 0, CANVAS_WIDTH, battles.length * BATTLE_HEIGHT);
   ctx.font = "18px Arial";
 
-  let turnNumberIconSize = 25 + PET_WIDTH * 2 + 15;
+  let turnNumberIconSize = (25 + PET_WIDTH) * 2;
+  let livesIconSize = 15 + PET_WIDTH;
 
   let hourglassIcon = await Canvas.loadImage("hourglass-twemoji.png");
   let heartIcon = await Canvas.loadImage("heart-twemoji.png");
   for(let i = 0; i < battles.length; i++){
+    // Turn 3 (shows up turn 4) life regain
+    if(i === 2 && currentLives < maxLives){
+      currentLives++;
+    }
     let baseYPosition = i * BATTLE_HEIGHT + 25;
+
+    // Draw Turn
     ctx.drawImage(hourglassIcon, 25, baseYPosition, PET_WIDTH, PET_WIDTH);
     ctx.fillStyle = "black";
-    ctx.fillText(i + 1, 25 + PET_WIDTH + 15, baseYPosition + PET_WIDTH/2);
+    ctx.font = "24px Arial";
+    ctx.fillText(i + 1, 25 + PET_WIDTH + 15, baseYPosition + PET_WIDTH/2 + 6);
+
+    // Draw Player Lives
+    ctx.drawImage(heartIcon, turnNumberIconSize, baseYPosition, PET_WIDTH, PET_WIDTH);
+    ctx.fillStyle = "white";
+    ctx.font = "24px Arial";
+    ctx.fillText(currentLives, turnNumberIconSize + PET_WIDTH/2, baseYPosition + (PET_WIDTH - 24) + 6);
+    ctx.fillStyle = "black";
+    ctx.font = "18px Arial";
+    let resultText;
+    switch(battles[i].outcome){
+      case BATTLE_OUTCOMES.LOSS:
+        resultText = "LOSS";
+        currentLives--;
+        break;
+      case BATTLE_OUTCOMES.WIN:
+        resultText = "WIN";
+        break;
+      case BATTLE_OUTCOMES.TIE:
+        resultText = "TIE";
+        break;
+      default:
+        resultText = "ERROR IDK";
+    }
+    ctx.fillText(resultText, turnNumberIconSize + PET_WIDTH/2, baseYPosition + PET_WIDTH + 18 + 6);
 
     for(let x = 0; x < battles[i].playerBoard.boardPets.length; x++){
-      let baseXPosition = x * (PET_WIDTH + 25) + 25 + turnNumberIconSize;
+      let baseXPosition = x * (PET_WIDTH + 25) + 25 + turnNumberIconSize + livesIconSize;
       let petJSON = battles[i].playerBoard.boardPets[x];
       await drawPet(ctx, petJSON, baseXPosition, baseYPosition, true);
     }
@@ -325,13 +373,30 @@ client.on('messageCreate', async (message) => {
       drawToy(
         ctx,
         battles[i].playerBoard.toy,
-        (5) * (PET_WIDTH + 25) + turnNumberIconSize,
+        (5) * (PET_WIDTH + 25) + turnNumberIconSize + livesIconSize,
         baseYPosition
       )
     }
 
+    // Draw opponent lives
+    let opponentLivesOffset = 0;
+    if(battleOpponentInfo[i]){
+      let opponent = battleOpponentInfo[i].find(opponent => opponent.DisplayName === battles[i].opponentName);
+      let opponentLives = opponent.Lives ?? 0;
+      switch(opponent.Outcome){
+        case BATTLE_OUTCOMES.LOSS:
+          opponentLives++;
+          break;
+      }
+      ctx.drawImage(heartIcon, CANVAS_WIDTH - PET_WIDTH - 25, baseYPosition, PET_WIDTH, PET_WIDTH);
+      ctx.fillStyle = "white";
+      ctx.font = "24px Arial";
+      ctx.fillText(opponentLives, CANVAS_WIDTH - PET_WIDTH - 25 + PET_WIDTH/2, baseYPosition + (PET_WIDTH - 24) + 6);
+      opponentLivesOffset = livesIconSize + 25;
+    }
+
     for(let x = 0; x < battles[i].oppBoard.boardPets.length; x++){
-      let baseXPosition = CANVAS_WIDTH - (x * (PET_WIDTH + 25) + PET_WIDTH + 25);
+      let baseXPosition = CANVAS_WIDTH - (x * (PET_WIDTH + 25) + PET_WIDTH + 25 + opponentLivesOffset);
       let petJSON = battles[i].oppBoard.boardPets[x];
       await drawPet(ctx, petJSON, baseXPosition, baseYPosition, false);
     }
@@ -340,7 +405,7 @@ client.on('messageCreate', async (message) => {
       drawToy(
         ctx,
         battles[i].oppBoard.toy,
-        CANVAS_WIDTH - ((5 + 1) * (PET_WIDTH + 25)),
+        CANVAS_WIDTH - ((5 + 1) * (PET_WIDTH + 25) + opponentLivesOffset),
         baseYPosition
       )
     }
