@@ -382,17 +382,19 @@ client.on('messageCreate', async (message) => {
     let opponentLivesOffset = 0;
     if(battleOpponentInfo[i]){
       let opponent = battleOpponentInfo[i].find(opponent => opponent.DisplayName === battles[i].opponentName);
-      let opponentLives = opponent.Lives ?? 0;
-      switch(opponent.Outcome){
-        case BATTLE_OUTCOMES.LOSS:
-          opponentLives++;
-          break;
+      let opponentLives = opponent ? opponent.Lives : null;
+      if(opponentLives){
+        switch(opponent.Outcome){
+          case BATTLE_OUTCOMES.LOSS:
+            opponentLives++;
+            break;
+        }
+        ctx.drawImage(heartIcon, CANVAS_WIDTH - PET_WIDTH - 25, baseYPosition, PET_WIDTH, PET_WIDTH);
+        ctx.fillStyle = "white";
+        ctx.font = "24px Arial";
+        ctx.fillText(opponentLives, CANVAS_WIDTH - PET_WIDTH - 25 + PET_WIDTH/2, baseYPosition + (PET_WIDTH - 24) + 6);
+        opponentLivesOffset = livesIconSize + 25;
       }
-      ctx.drawImage(heartIcon, CANVAS_WIDTH - PET_WIDTH - 25, baseYPosition, PET_WIDTH, PET_WIDTH);
-      ctx.fillStyle = "white";
-      ctx.font = "24px Arial";
-      ctx.fillText(opponentLives, CANVAS_WIDTH - PET_WIDTH - 25 + PET_WIDTH/2, baseYPosition + (PET_WIDTH - 24) + 6);
-      opponentLivesOffset = livesIconSize + 25;
     }
 
     for(let x = 0; x < battles[i].oppBoard.boardPets.length; x++){
