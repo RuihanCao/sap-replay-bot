@@ -251,6 +251,8 @@ async function login(){
   if(loginToken.ok){
     let responseJSON = await loginToken.json();
     AUTH_TOKEN = responseJSON["Token"]; 
+    console.log(`Ready! Logged in`);
+    console.log(PETS[0]);
   }
 }
 
