@@ -671,7 +671,7 @@ client.on('messageCreate', async (message) => {
 
           if (calculatorLink.length > 512) {
               console.warn(`Generated URL is too long (${calculatorLink.length}) and was skipped.`);
-              return message.reply(`The generated link for this turn is too long for a button. Here it is directly:\n${calculatorLink}`);
+              return message.reply(`The generated link for this turn is too long for a button. Here it is directly:\n[Sap Calculator](${calculatorLink})`);
           }
           const button = new ButtonBuilder();
           button.data = {
