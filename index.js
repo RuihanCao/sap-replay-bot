@@ -454,7 +454,7 @@ function truncateKeys(data) {
 }
 
 function generateCalculatorLink(calculatorState) {
-  const baseUrl = "https://sap-calculator.vercel.app/"; // TO DO: Change to sap-calculator.com after update
+  const baseUrl = "https://sap-calculator.com/"; 
 
   const strippedState = stripDefaultValues(calculatorState);
   
