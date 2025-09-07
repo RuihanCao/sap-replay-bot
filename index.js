@@ -42,7 +42,7 @@ for(let toy of rawToys){
   TOYS[toy.Id] = toy;
 }
 
-const PACK_MAP = { 0: "Turtle", 1: "Puppy", 2: "Star", 3: "Golden", 6: "Unicorn" };
+const PACK_MAP = { 0: "Turtle", 1: "Puppy", 2: "Star", 5: "Golden", 6: "Unicorn", 7: "Danger"};
 
 function getBattleInfo(battle){
   let newBattle = {};
@@ -276,6 +276,15 @@ function parseReplayForCalculator(battleJson) {
       }
       const petTempAtk = petJson["At"]["Temp"] ?? 0;
       const petTempHp = petJson["Hp"]["Temp"] ?? 0;
+      let belugaSwallowedPet = null;
+      if (petId == 182) {
+        const swallowedPets = g(petJson, 'MiMs.Lsts.WhiteWhaleAbility', []);
+        if (swallowedPets && swallowedPets.length > 0) {
+          const swallowedPetId = swallowedPets[0].Enu;
+          const swallowedPetName = PET_MAP[String(swallowedPetId)] || `Pet #${swallowedPetId}`;
+          belugaSwallowedPet = swallowedPetName;
+        }
+      }
       return {
           name: PETS[petId] ? PETS[petId].Name : null,
           attack: petJson.At?.Perm + petTempAtk || 0,
@@ -283,7 +292,7 @@ function parseReplayForCalculator(battleJson) {
           exp: petJson.Exp || 0,
           equipment: petJson.Perk ? { name: PERKS[petJson.Perk]?.Name || "Unknown Perk" } : null,
           mana: petJson.Mana || 0,
-          belugaSwallowedPet: null,
+          belugaSwallowedPet: belugaSwallowedPet,
           abominationSwallowedPet1: null,
           abominationSwallowedPet2: null,
           abominationSwallowedPet3: null,
@@ -343,8 +352,10 @@ function parseReplayForCalculator(battleJson) {
       opponentRollAmount: opponentBoard.Rold || 0,
       playerSummonedAmount: userBoard.MiSu || 0,
       opponentSummonedAmount: opponentBoard.MiSu || 0,
-      playerLevel3Sold: 0, // Defaulting this value
-      opponentLevel3Sold: 0, // Defaulting this value
+      playerLevel3Sold: userBoard.MSFL || 0,
+      opponentLevel3Sold: opponentBoard.MSFL || 0,
+      playerTransformationAmount: userBoard.TrTT || 0,
+      opponentTransformationAmount: opponentBoard.TrTT || 0,
       playerPets: parseBoardPets(userBoard),
       opponentPets: parseBoardPets(opponentBoard),
       // Default UI settings for a clean calculator state
