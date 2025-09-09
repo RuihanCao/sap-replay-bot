@@ -278,17 +278,17 @@ function parseReplayForCalculator(battleJson) {
       const petTempHp = petJson["Hp"]["Temp"] ?? 0;
       let belugaSwallowedPet = null;
       if (petId == 182) {
-        const swallowedPets = g(petJson, 'MiMs.Lsts.WhiteWhaleAbility', []);
+        const swallowedPets = petJson?.MiMs?.Lsts?.WhiteWhaleAbility || [];
         if (swallowedPets && swallowedPets.length > 0) {
           const swallowedPetId = swallowedPets[0].Enu;
-          const swallowedPetName = PET_MAP[String(swallowedPetId)] || `Pet #${swallowedPetId}`;
+          const swallowedPetName = PETS[String(swallowedPetId)]?.Name || `Pet #${swallowedPetId}`;
           belugaSwallowedPet = swallowedPetName;
         }
       }
       return {
           name: PETS[petId] ? PETS[petId].Name : null,
           attack: petJson.At?.Perm + petTempAtk || 0,
-          health: petJson.Hp?.Perm + petTempAtk || 0,
+          health: petJson.Hp?.Perm + petTempHp || 0,
           exp: petJson.Exp || 0,
           equipment: petJson.Perk ? { name: PERKS[petJson.Perk]?.Name || "Unknown Perk" } : null,
           mana: petJson.Mana || 0,
@@ -385,6 +385,8 @@ function stripDefaultValues(state) {
   if (state.opponentSummonedAmount !== 0) strippedState.opponentSummonedAmount = state.opponentSummonedAmount;
   if (state.playerLevel3Sold !== 0) strippedState.playerLevel3Sold = state.playerLevel3Sold;
   if (state.opponentLevel3Sold !== 0) strippedState.opponentLevel3Sold = state.opponentLevel3Sold;
+  if (state.playerTransformationAmount !== 0) strippedState.playerTransformationAmount = state.playerTransformationAmount;
+  if (state.opponentTransformationAmount !== 0) strippedState.opponentTransformationAmount = state.opponentTransformationAmount;
   
   // --- UI Flags (only include if they are `true`) ---
   if (state.angler) strippedState.angler = true;
@@ -413,6 +415,7 @@ function stripDefaultValues(state) {
       if (pet.exp !== 0) newPet.exp = pet.exp;
       if (pet.mana !== 0) newPet.mana = pet.mana;
       if (pet.equipment) newPet.equipment = pet.equipment; 
+      if (pet.belugaSwallowedPet !== null) newPet.belugaSwallowedPet = pet.belugaSwallowedPet;
 
       // All other pet properties like `belugaSwallowedPet`, `battlesFought`, etc.,
       // are omitted because their default is null or 0.
@@ -444,9 +447,9 @@ const KEY_MAP = {
   "opponentLevel3Sold": "oL3", "playerPets": "p", "opponentPets": "o", "angler": "an",
   "allPets": "ap", "logFilter": "lf", "fontSize": "fs", "customPacks": "cp",
   "oldStork": "os", "tokenPets": "tp", "komodoShuffle": "ks", "mana": "m",
-  "showAdvanced": "sa", "ailmentEquipment": "ae",
+  "showAdvanced": "sa", "ailmentEquipment": "ae", "playerTransformationAmount": "pTA", "opponentTransformationAmount": "oTA",
   // Pet Object Keys
-  "name": "n", "attack": "a", "health": "h", "exp": "e", "equipment": "eq"
+  "name": "n", "attack": "a", "health": "h", "exp": "e", "equipment": "eq", "belugaSwallowedPet": "bSP"
 };
 
 function truncateKeys(data) {
