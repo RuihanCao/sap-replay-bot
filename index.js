@@ -8,7 +8,7 @@ let AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW
 const API_VERSION = "42";
 
 const PLACEHOLDER_SPRITE = 'i-dunno.png';
-const PLACEHOLDER_PERK = 'Sprite/Food/Tier-2/SleepingPill.png';
+const PLACEHOLDER_PERK = 'i-dunno.png';
 
 const CANVAS_WIDTH = 1250;
 const PET_WIDTH = 50;
@@ -491,6 +491,7 @@ client.on('messageCreate', async (message) => {
     try {
       let replayObject = JSON.parse(message.content);
       participationId = replayObject["Pid"];
+      console.log(`Participation Id: ${participationId}`);
     }catch(e){
       return;
     }
