@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 let AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEwMGE3YTVlLWNlMTItNDU5MC05ZTEwLTE0MmViOWY3ZTkwMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJMR1RZUVoiLCJqdGkiOiIyYTc0MmQwYy0wNGU4LTQyN2MtOWVjMC1kY2NiZjU1MDBlNTIiLCJleHAiOjE3NTM1MTM0OTAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImF1ZCI6IioifQ.H-gnWFes3Qyie-VPzuBcK94voFZ1jx5KMv1B3GsaXM4";
-const API_VERSION = "43";
+const API_VERSION = "44";
 
 const PLACEHOLDER_SPRITE = 'i-dunno.png';
 const PLACEHOLDER_PERK = 'i-dunno.png';
@@ -165,6 +165,7 @@ async function drawPet(ctx, petJSON, x, y, flip){
     ctx.drawImage(perkImage, x + 30, y - 10, 30, 30);
   }
 
+  ctx.font = "18px Arial";
   ctx.fillStyle = "green";
   ctx.fillText(
     petJSON.attack + petJSON.tempAttack,
@@ -593,7 +594,7 @@ client.on('messageCreate', async (message) => {
       }
 
       if(battles[i].playerBoard.toy.imagePath){
-        drawToy(
+        await drawToy(
           ctx,
           battles[i].playerBoard.toy,
           (5) * (PET_WIDTH + 25) + turnNumberIconSize + livesIconSize,
@@ -627,7 +628,7 @@ client.on('messageCreate', async (message) => {
       }
 
       if(battles[i].oppBoard.toy.imagePath){
-        drawToy(
+        await drawToy(
           ctx,
           battles[i].oppBoard.toy,
           CANVAS_WIDTH - ((5 + 1) * (PET_WIDTH + 25) + opponentLivesOffset),
