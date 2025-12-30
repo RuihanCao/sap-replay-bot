@@ -523,6 +523,12 @@ client.on('messageCreate', async (message) => {
     let currentLives = maxLives;
     let battles = [];
     let battleOpponentInfo = [];
+
+    let numberOfBattles = actions.filter(action => action["Type"] === 0).length;
+    if(numberOfBattles > 30){
+      message.reply(`Max number of turns is 30. Your replay has ${numberOfBattles} turns.`);
+      return;
+    }
     for(let i = 0; i < actions.length; i++){
       if(actions[i]["Type"] === 0){
         let battle = JSON.parse(actions[i]["Battle"]);
