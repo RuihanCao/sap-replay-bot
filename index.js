@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { Client, Events, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const Canvas = require('canvas');
+const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 
@@ -10,7 +11,13 @@ const API_VERSION = "44";
 const PLACEHOLDER_SPRITE = 'i-dunno.png';
 const PLACEHOLDER_PERK = 'i-dunno.png';
 
-const CANVAS_WIDTH = 1250;
+const BASE_CANVAS_WIDTH = 1250;
+const WIN_PERCENT_COLUMN_WIDTH = 260;
+const FOOTER_HEIGHT = 60;
+const CANVAS_WIDTH = BASE_CANVAS_WIDTH + WIN_PERCENT_COLUMN_WIDTH;
+const LUCK_DRAW_WEIGHT = 0.7;
+const LUCK_POINTS_MULTIPLIER = 10;
+const LUCK_POINTS_CLIP = 50;
 const PET_WIDTH = 50;
 const BATTLE_HEIGHT = 125;
 
@@ -484,6 +491,153 @@ function generateCalculatorLink(calculatorState) {
   return `${baseUrl}?c=${base64Data}`;
 }
 
+function parseWinPercentText(rawText) {
+  if (!rawText) {
+    return null;
+  }
+
+  const normalized = rawText.replace(/\s+/g, ' ').trim();
+  const match = normalized.match(/Player Wins:\s*\d+\s*-\s*([0-9.]+%)\s*Opponent Wins:\s*\d+\s*-\s*([0-9.]+%)\s*Draws:\s*\d+\s*-\s*([0-9.]+%)/i);
+  if (!match) {
+    return {
+      rawLine: normalized,
+      player: null,
+      opponent: null,
+      draw: null
+    };
+  }
+
+  return {
+    rawLine: normalized,
+    player: match[1],
+    opponent: match[2],
+    draw: match[3]
+  };
+}
+
+async function getWinPercentText(page, calculatorLink) {
+  await page.goto(calculatorLink, { waitUntil: 'domcontentloaded' });
+
+  const simulateButton = page.getByRole('button', { name: 'Simulate' });
+  await simulateButton.waitFor({ state: 'visible', timeout: 15000 });
+  await simulateButton.click();
+
+  const resultLocator = page.locator('text=Player Wins').first();
+  await resultLocator.waitFor({ timeout: 20000 });
+
+  const rawText = await resultLocator.evaluate((node) => {
+    if (node && node.parentElement) {
+      return node.parentElement.textContent;
+    }
+    return node ? node.textContent : '';
+  });
+
+  return parseWinPercentText(rawText);
+}
+
+async function buildWinPercentReport(battleJsonList) {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+
+  const results = [];
+  for (let i = 0; i < battleJsonList.length; i++) {
+    const calculatorState = parseReplayForCalculator(battleJsonList[i]);
+    const calculatorLink = generateCalculatorLink(calculatorState);
+    try {
+      const resultData = await getWinPercentText(page, calculatorLink);
+      const line = resultData && resultData.player
+        ? `Turn ${i + 1}: Player ${resultData.player} | Opponent ${resultData.opponent} | Draw ${resultData.draw}`
+        : `Turn ${i + 1}: ${resultData && resultData.rawLine ? resultData.rawLine : 'No result found.'}`;
+      results.push({
+        line,
+        player: resultData ? resultData.player : null,
+        opponent: resultData ? resultData.opponent : null,
+        draw: resultData ? resultData.draw : null
+      });
+    } catch (error) {
+      console.error(`Failed to fetch win% for turn ${i + 1}:`, error);
+      results.push({
+        line: `Turn ${i + 1}: Error fetching win%.`,
+        player: null,
+        opponent: null,
+        draw: null
+      });
+    }
+  }
+
+  await browser.close();
+  return results;
+}
+
+function parsePercentValue(percentText) {
+  if (!percentText) {
+    return null;
+  }
+  const value = Number(String(percentText).replace('%', ''));
+  return Number.isFinite(value) ? value : null;
+}
+
+function getOutcomeChance(winPercent, outcome) {
+  if (!winPercent) {
+    return null;
+  }
+  if (outcome === BATTLE_OUTCOMES.WIN) {
+    return parsePercentValue(winPercent.player);
+  }
+  if (outcome === BATTLE_OUTCOMES.LOSS) {
+    return parsePercentValue(winPercent.opponent);
+  }
+  if (outcome === BATTLE_OUTCOMES.TIE) {
+    return parsePercentValue(winPercent.draw);
+  }
+  return null;
+}
+
+function calcLuckPoints(winPercent, outcome) {
+  if (!winPercent) {
+    return null;
+  }
+
+  const winValue = parsePercentValue(winPercent.player);
+  const lossValue = parsePercentValue(winPercent.opponent);
+  const drawValue = parsePercentValue(winPercent.draw);
+
+  if (winValue === null || lossValue === null || drawValue === null) {
+    return null;
+  }
+
+  const pWin = winValue / 100;
+  const pLoss = lossValue / 100;
+  const pDraw = drawValue / 100;
+
+  let sign = 0;
+  let pOutcome = null;
+  let drawWeight = 1;
+  if (outcome === BATTLE_OUTCOMES.WIN) {
+    sign = 1;
+    pOutcome = pWin;
+  } else if (outcome === BATTLE_OUTCOMES.LOSS) {
+    sign = -1;
+    pOutcome = pLoss;
+  } else if (outcome === BATTLE_OUTCOMES.TIE) {
+    const expectedScore = pWin + 0.5 * pDraw;
+    sign = 0.5 - expectedScore >= 0 ? 1 : -1;
+    pOutcome = pDraw;
+    drawWeight = LUCK_DRAW_WEIGHT;
+  }
+
+  if (pOutcome === null || pOutcome <= 0) {
+    return null;
+  }
+
+  const rawPoints = drawWeight * sign * LUCK_POINTS_MULTIPLIER * Math.log2(1 / pOutcome);
+  const clipped = Math.max(-LUCK_POINTS_CLIP, Math.min(LUCK_POINTS_CLIP, rawPoints));
+  return {
+    raw: rawPoints,
+    clipped
+  };
+}
+
 
 client.on('messageCreate', async (message) => {
   // check whether message contains the code format
@@ -522,6 +676,7 @@ client.on('messageCreate', async (message) => {
     let maxLives = replay["GenesisModeModel"] ? JSON.parse(replay["GenesisModeModel"])["MaxLives"] : 5;
     let currentLives = maxLives;
     let battles = [];
+    let calcBattles = [];
     let battleOpponentInfo = [];
 
     let numberOfBattles = actions.filter(action => action["Type"] === 0).length;
@@ -537,18 +692,26 @@ client.on('messageCreate', async (message) => {
         // let opponentName = battle["Opponent"]["DisplayName"];
         // let turnNumber = battle["UserBoard"]["Tur"];
         battles.push(getBattleInfo(battle));
+        calcBattles.push(battle);
       }
       if(actions[i]["Type"] === 1){
         let opponentInfo = JSON.parse(actions[i]["Mode"])["Opponents"];
         battleOpponentInfo.push(opponentInfo);
       }
     }
-    let canvas = Canvas.createCanvas(CANVAS_WIDTH, battles.length * BATTLE_HEIGHT);
+    let winPercentResults = [];
+    try {
+      winPercentResults = await buildWinPercentReport(calcBattles);
+    } catch (error) {
+      console.error("Auto-calc failed:", error);
+    }
+
+    let canvas = Canvas.createCanvas(CANVAS_WIDTH, battles.length * BATTLE_HEIGHT + FOOTER_HEIGHT);
     let ctx = canvas.getContext("2d");
 
-    ctx.fillStyle = "#FFFFFF";
     ctx.textAlign = "center";
-    ctx.fillRect(0, 0, CANVAS_WIDTH, battles.length * BATTLE_HEIGHT);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, CANVAS_WIDTH, battles.length * BATTLE_HEIGHT + FOOTER_HEIGHT);
     ctx.font = "18px Arial";
 
     let turnNumberIconSize = (25 + PET_WIDTH) * 2;
@@ -556,12 +719,39 @@ client.on('messageCreate', async (message) => {
 
     let hourglassIcon = await Canvas.loadImage("hourglass-twemoji.png");
     let heartIcon = await Canvas.loadImage("heart-twemoji.png");
+    let totalLuckPoints = 0;
+    let totalLuckClipped = 0;
+    let luckSamples = 0;
+
     for(let i = 0; i < battles.length; i++){
       // Turn 3 (shows up turn 4) life regain
       if(i === 2 && currentLives < maxLives){
         currentLives++;
       }
       let baseYPosition = i * BATTLE_HEIGHT + 25;
+      let rowStartY = i * BATTLE_HEIGHT;
+      const winPercent = winPercentResults[i] || null;
+      const winValue = winPercent ? parsePercentValue(winPercent.player) : null;
+      const isGaped = battles[i].outcome === BATTLE_OUTCOMES.WIN && winValue !== null && winValue <= 5;
+      ctx.fillStyle = "#FFFFFF";
+      if (isGaped) {
+        ctx.fillStyle = "#F4D35E";
+      } else {
+        switch (battles[i].outcome) {
+          case BATTLE_OUTCOMES.WIN:
+            ctx.fillStyle = "#E6F4EA";
+            break;
+          case BATTLE_OUTCOMES.LOSS:
+            ctx.fillStyle = "#FDECEA";
+            break;
+          case BATTLE_OUTCOMES.TIE:
+            ctx.fillStyle = "#F2F2F2";
+            break;
+          default:
+            ctx.fillStyle = "#FFFFFF";
+        }
+      }
+      ctx.fillRect(0, rowStartY, CANVAS_WIDTH, BATTLE_HEIGHT);
 
       // Draw Turn
       ctx.drawImage(hourglassIcon, 25, baseYPosition, PET_WIDTH, PET_WIDTH);
@@ -619,16 +809,16 @@ client.on('messageCreate', async (message) => {
               opponentLives++;
               break;
           }
-          ctx.drawImage(heartIcon, CANVAS_WIDTH - PET_WIDTH - 25, baseYPosition, PET_WIDTH, PET_WIDTH);
+          ctx.drawImage(heartIcon, BASE_CANVAS_WIDTH - PET_WIDTH - 25, baseYPosition, PET_WIDTH, PET_WIDTH);
           ctx.fillStyle = "white";
           ctx.font = "24px Arial";
-          ctx.fillText(opponentLives, CANVAS_WIDTH - PET_WIDTH - 25 + PET_WIDTH/2, baseYPosition + (PET_WIDTH - 24) + 6);
+          ctx.fillText(opponentLives, BASE_CANVAS_WIDTH - PET_WIDTH - 25 + PET_WIDTH/2, baseYPosition + (PET_WIDTH - 24) + 6);
           opponentLivesOffset = livesIconSize + 25;
         }
       }
 
       for(let x = 0; x < battles[i].oppBoard.boardPets.length; x++){
-        let baseXPosition = CANVAS_WIDTH - (x * (PET_WIDTH + 25) + PET_WIDTH + 25 + opponentLivesOffset);
+        let baseXPosition = BASE_CANVAS_WIDTH - (x * (PET_WIDTH + 25) + PET_WIDTH + 25 + opponentLivesOffset);
         let petJSON = battles[i].oppBoard.boardPets[x];
         await drawPet(ctx, petJSON, baseXPosition, baseYPosition, false);
       }
@@ -637,12 +827,78 @@ client.on('messageCreate', async (message) => {
         await drawToy(
           ctx,
           battles[i].oppBoard.toy,
-          CANVAS_WIDTH - ((5 + 1) * (PET_WIDTH + 25) + opponentLivesOffset),
+          BASE_CANVAS_WIDTH - ((5 + 1) * (PET_WIDTH + 25) + opponentLivesOffset),
           baseYPosition
         )
       }
+
+      ctx.textAlign = "left";
+      if (winPercent && winPercent.player && winPercent.opponent && winPercent.draw) {
+        const lossValue = parsePercentValue(winPercent.opponent);
+        const drawValue = parsePercentValue(winPercent.draw);
+        const maxValue = Math.max(winValue ?? -1, lossValue ?? -1, drawValue ?? -1);
+        const hasCertainOutcome = [winValue, lossValue, drawValue].some((value) => value === 100);
+
+        const columnX = BASE_CANVAS_WIDTH + 10;
+        const textStartY = baseYPosition + 8;
+        const lineHeight = 18;
+
+        if (!hasCertainOutcome || winValue === 100) {
+          ctx.fillStyle = "#137333";
+          ctx.font = (winValue === maxValue ? "bold 16px Arial" : "16px Arial");
+          ctx.fillText(`Win ${winPercent.player}`, columnX, textStartY);
+        }
+
+        if (!hasCertainOutcome || lossValue === 100) {
+          const lossY = hasCertainOutcome ? textStartY : textStartY + lineHeight;
+          ctx.fillStyle = "#B00020";
+          ctx.font = (lossValue === maxValue ? "bold 16px Arial" : "16px Arial");
+          ctx.fillText(`Loss ${winPercent.opponent}`, columnX, lossY);
+        }
+
+        if (!hasCertainOutcome || drawValue === 100) {
+          const drawY = hasCertainOutcome ? textStartY : textStartY + lineHeight * 2;
+          ctx.fillStyle = "#000000";
+          ctx.font = (drawValue === maxValue ? "bold 16px Arial" : "16px Arial");
+          ctx.fillText(`Draw ${winPercent.draw}`, columnX, drawY);
+        }
+
+        const luckPoints = calcLuckPoints(winPercent, battles[i].outcome);
+        if (luckPoints) {
+          totalLuckPoints += luckPoints.raw;
+          totalLuckClipped += luckPoints.clipped;
+          luckSamples += 1;
+        }
+
+        if (isGaped) {
+          ctx.fillStyle = "#7A5C00";
+          ctx.font = "bold 16px Arial";
+          const gapedY = textStartY + lineHeight * 3;
+          ctx.fillText("GAPED", columnX, gapedY);
+        }
+      } else {
+        ctx.fillStyle = "#000000";
+        ctx.font = "16px Arial";
+        ctx.fillText("Win% unavailable", BASE_CANVAS_WIDTH + 10, baseYPosition + PET_WIDTH / 2 + 6);
+      }
+      ctx.textAlign = "center";
     }
-    message.reply({files: [{attachment: canvas.toBuffer(), name: "replay.png"}]});
+
+    const footerTop = battles.length * BATTLE_HEIGHT;
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, footerTop, CANVAS_WIDTH, FOOTER_HEIGHT);
+    ctx.fillStyle = "#000000";
+    ctx.font = "18px Arial";
+    ctx.textAlign = "left";
+    const averageLuck = luckSamples > 0 ? (totalLuckPoints / luckSamples) : null;
+    const averageLuckClipped = luckSamples > 0 ? (totalLuckClipped / luckSamples) : null;
+    const totalLuckText = luckSamples > 0
+      ? `Luck points: ${totalLuckPoints.toFixed(1)} | Avg: ${averageLuck.toFixed(1)} | Clipped Avg: ${averageLuckClipped.toFixed(1)}`
+      : "Luck score unavailable";
+    ctx.fillText(totalLuckText, 25, footerTop + 35);
+    ctx.textAlign = "center";
+    await message.reply({files: [{attachment: canvas.toBuffer(), name: "replay.png"}]});
+
   } else if (message.content.toLowerCase().startsWith('!calc ')) {
     const jsonArgument = message.content.slice('!calc '.length).trim();
         
