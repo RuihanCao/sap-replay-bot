@@ -104,26 +104,28 @@ client.on('messageCreate', async (message) => {
       message.reply("Replay Pid not found.");
       return;
     }
-  } else if (lowerContent.startsWith('!odds ')) {
-    const oddsArg = trimmedContent.slice('!odds '.length).trim();
-    includeOdds = true;
-    if (!oddsArg) {
-      return message.reply("Please provide a replay ID. Example: `!odds ABC123`");
-    }
-    if (oddsArg.startsWith('{') && oddsArg.endsWith('}')) {
-      try {
-        const replayObject = JSON.parse(oddsArg);
-        participationId = replayObject["Pid"];
-      } catch (e) {
-        return message.reply("Invalid JSON format. Please provide the data like this: `!odds {\"Pid\":\"...\",\"T\":...}`");
-      }
-    } else {
-      participationId = oddsArg;
-    }
-    if (!participationId) {
-      return message.reply("Replay Pid not found.");
-    }
-  } else {
+  } 
+  // else if (lowerContent.startsWith('!odds ')) {
+  //   const oddsArg = trimmedContent.slice('!odds '.length).trim();
+  //   includeOdds = true;
+  //   if (!oddsArg) {
+  //     return message.reply("Please provide a replay ID. Example: `!odds ABC123`");
+  //   }
+  //   if (oddsArg.startsWith('{') && oddsArg.endsWith('}')) {
+  //     try {
+  //       const replayObject = JSON.parse(oddsArg);
+  //       participationId = replayObject["Pid"];
+  //     } catch (e) {
+  //       return message.reply("Invalid JSON format. Please provide the data like this: `!odds {\"Pid\":\"...\",\"T\":...}`");
+  //     }
+  //   } else {
+  //     participationId = oddsArg;
+  //   }
+  //   if (!participationId) {
+  //     return message.reply("Replay Pid not found.");
+  //   }
+  // }
+  else {
     return;
   }
 
