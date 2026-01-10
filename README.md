@@ -36,7 +36,14 @@ node index.js
 ```
 !calc {"Pid":"<participation_id>","T":<turn_number>}
 ```
-
+- Calculate win rates for each turn (Headless Node.js):
+```
+!sim {"Pid":"<participation_id>","T":<turn_number>}
+```
+- Calculate win rates for each turn (Playwright Browser - Slow):
+```
+!odds {"Pid":"<participation_id>","T":<turn_number>}
+```
 ## Output
 
 - The replay image includes win/loss/draw percentages for each turn.
