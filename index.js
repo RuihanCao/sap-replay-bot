@@ -29,6 +29,7 @@ client.on('messageCreate', async (message) => {
     }
 
     const participationId = replayData.Pid;
+    console.log(`!calc Participation Id: ${participationId}`);
     const turnNumber = replayData.T;
 
     // --- Argument Validation ---
@@ -108,28 +109,9 @@ client.on('messageCreate', async (message) => {
   } else if (lowerContent.startsWith('!odds ')) {
     const oddsArg = trimmedContent.slice('!odds '.length).trim();
     includeOdds = true;
-    if (!oddsArg) {
-      return message.reply("Please provide a replay ID. Example: `!odds ABC123`");
-    }
-    if (oddsArg.startsWith('{') && oddsArg.endsWith('}')) {
-      try {
-        const replayObject = JSON.parse(oddsArg);
-        participationId = replayObject["Pid"];
-      } catch (e) {
-        return message.reply("Invalid JSON format. Please provide the data like this: `!odds {\"Pid\":\"...\",\"T\":...}`");
-      }
-    } else {
-      participationId = oddsArg;
-    }
-    if (!participationId) {
-      return message.reply("Replay Pid not found.");
-    }
-  } else if (lowerContent.startsWith('!sim ')) {
-    const oddsArg = trimmedContent.slice('!sim '.length).trim();
-    includeOdds = true;
     useHeadless = true;
     if (!oddsArg) {
-      return message.reply("Please provide a replay ID. Example: `!sim ABC123`");
+      return message.reply("Please provide a replay ID. Example: `!odds {\"Pid\":ABC123}`");
     }
     if (oddsArg.startsWith('{') && oddsArg.endsWith('}')) {
       try {
@@ -144,6 +126,7 @@ client.on('messageCreate', async (message) => {
     if (!participationId) {
       return message.reply("Replay Pid not found.");
     }
+    console.log(`!odds Participation Id: ${participationId}`);
   } else {
     return;
   }
