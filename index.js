@@ -4,7 +4,7 @@ const { Client, Events, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, Butt
 const { A_DAY_IN_MS } = require('./lib/config');
 const { login, fetchReplay } = require('./lib/api');
 const { getBattleInfo } = require('./lib/battle');
-const { buildWinPercentReport, parseReplayForCalculator, generateCalculatorLink } = require('./lib/calculator');
+const { buildWinPercentReport, buildWinPercentReportHeadless, parseReplayForCalculator, generateCalculatorLink } = require('./lib/calculator');
 const { renderReplayImage } = require('./lib/render');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
@@ -90,6 +90,7 @@ client.on('messageCreate', async (message) => {
   // check whether message contains the code format
   let participationId;
   let includeOdds = false;
+  let useHeadless = false;
   let processingMessage = null;
   if (trimmedContent.startsWith('{') && trimmedContent.endsWith('}')) {
     try {
@@ -104,33 +105,55 @@ client.on('messageCreate', async (message) => {
       message.reply("Replay Pid not found.");
       return;
     }
-  } 
-  // else if (lowerContent.startsWith('!odds ')) {
-  //   const oddsArg = trimmedContent.slice('!odds '.length).trim();
-  //   includeOdds = true;
-  //   if (!oddsArg) {
-  //     return message.reply("Please provide a replay ID. Example: `!odds ABC123`");
-  //   }
-  //   if (oddsArg.startsWith('{') && oddsArg.endsWith('}')) {
-  //     try {
-  //       const replayObject = JSON.parse(oddsArg);
-  //       participationId = replayObject["Pid"];
-  //     } catch (e) {
-  //       return message.reply("Invalid JSON format. Please provide the data like this: `!odds {\"Pid\":\"...\",\"T\":...}`");
-  //     }
-  //   } else {
-  //     participationId = oddsArg;
-  //   }
-  //   if (!participationId) {
-  //     return message.reply("Replay Pid not found.");
-  //   }
-  // }
-  else {
+  } else if (lowerContent.startsWith('!odds ')) {
+    const oddsArg = trimmedContent.slice('!odds '.length).trim();
+    includeOdds = true;
+    if (!oddsArg) {
+      return message.reply("Please provide a replay ID. Example: `!odds ABC123`");
+    }
+    if (oddsArg.startsWith('{') && oddsArg.endsWith('}')) {
+      try {
+        const replayObject = JSON.parse(oddsArg);
+        participationId = replayObject["Pid"];
+      } catch (e) {
+        return message.reply("Invalid JSON format. Please provide the data like this: `!odds {\"Pid\":\"...\",\"T\":...}`");
+      }
+    } else {
+      participationId = oddsArg;
+    }
+    if (!participationId) {
+      return message.reply("Replay Pid not found.");
+    }
+  } else if (lowerContent.startsWith('!sim ')) {
+    const oddsArg = trimmedContent.slice('!sim '.length).trim();
+    includeOdds = true;
+    useHeadless = true;
+    if (!oddsArg) {
+      return message.reply("Please provide a replay ID. Example: `!sim ABC123`");
+    }
+    if (oddsArg.startsWith('{') && oddsArg.endsWith('}')) {
+      try {
+        const replayObject = JSON.parse(oddsArg);
+        participationId = replayObject["Pid"];
+      } catch (e) {
+        return message.reply("Invalid JSON format. Please provide the data like this: `!sim {\"Pid\":\"...\",\"T\":...}`");
+      }
+    } else {
+      participationId = oddsArg;
+    }
+    if (!participationId) {
+      return message.reply("Replay Pid not found.");
+    }
+  } else {
     return;
   }
 
   if (includeOdds) {
-    processingMessage = await message.reply("Calculating odds (~1 min), please wait...");
+    if (useHeadless) {
+      processingMessage = await message.reply("Calculating odds (~1 min), please wait...");
+    } else {
+      processingMessage = await message.reply("Calculating odds (~1 min), please wait...");
+    }
   }
 
   // Request replay data from server
@@ -165,7 +188,11 @@ client.on('messageCreate', async (message) => {
   let winPercentResults = [];
   if (includeOdds) {
     try {
-      winPercentResults = await buildWinPercentReport(calcBattles);
+      if (useHeadless) {
+        winPercentResults = await buildWinPercentReportHeadless(calcBattles);
+      } else {
+        winPercentResults = await buildWinPercentReport(calcBattles);
+      }
     } catch (error) {
       console.error("Auto-calc failed:", error);
     }
