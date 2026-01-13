@@ -126,7 +126,7 @@ client.on('messageCreate', async (message) => {
         const replayObject = JSON.parse(oddsArg);
         participationId = replayObject["Pid"];
       } catch (e) {
-        return message.reply("Invalid JSON format. Please provide the data like this: `!sim {\"Pid\":\"...\",\"T\":...}`");
+        return message.reply("Invalid JSON format. Please provide the data like this: `!odds {\"Pid\":\"...\",\"T\":...}`");
       }
     } else {
       participationId = oddsArg;
@@ -255,6 +255,7 @@ client.on('messageCreate', async (message) => {
     }
     return;
   } else if (lowerContent.startsWith('!sim ')) {
+    if (!DEBUG_MODE) return;
     const simArg = trimmedContent.slice('!sim '.length).trim();
     includeOdds = true;
     if (!simArg) {
