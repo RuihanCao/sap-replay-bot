@@ -4,7 +4,15 @@ const { Client, Events, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, Butt
 const { A_DAY_IN_MS } = require('./lib/config');
 const { login, fetchReplay } = require('./lib/api');
 const { getBattleInfo } = require('./lib/battle');
-const { buildWinPercentReport, buildWinPercentReportHeadless, parseReplayForCalculator, generateCalculatorLink } = require('./lib/calculator');
+const DEBUG_MODE = false;
+const {
+  buildWinPercentReport,
+  buildWinPercentReportHeadless,
+  getDebugBattle,
+  getDebugSequence,
+  parseReplayForCalculator,
+  generateCalculatorLink
+} = require('./lib/calculator');
 const { renderReplayImage } = require('./lib/render');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
@@ -118,7 +126,7 @@ client.on('messageCreate', async (message) => {
         const replayObject = JSON.parse(oddsArg);
         participationId = replayObject["Pid"];
       } catch (e) {
-        return message.reply("Invalid JSON format. Please provide the data like this: `!sim {\"Pid\":\"...\",\"T\":...}`");
+        return message.reply("Invalid JSON format. Please provide the data like this: `!odds {\"Pid\":\"...\",\"T\":...}`");
       }
     } else {
       participationId = oddsArg;
@@ -127,6 +135,145 @@ client.on('messageCreate', async (message) => {
       return message.reply("Replay Pid not found.");
     }
     console.log(`!odds Participation Id: ${participationId}`);
+  } else if (lowerContent.startsWith('!debug ')) {
+    if (!DEBUG_MODE) return;
+    const jsonArgument = message.content.slice('!debug '.length).trim();
+
+    let replayData;
+    try {
+      replayData = JSON.parse(jsonArgument);
+    } catch (e) {
+      return message.reply("Invalid JSON format. Please provide the data like this: `!debug {\"Pid\":\"...\",\"T\":...}`");
+    }
+
+    const participationId = replayData.Pid;
+    const turnNumber = replayData.T;
+
+    if (!participationId || turnNumber === undefined) {
+      return message.reply("The provided JSON is missing the required `Pid` or `T` (turn number) field.");
+    }
+    if (isNaN(turnNumber) || turnNumber <= 0) {
+      return message.reply("Please provide a valid, positive turn number in the `T` field.");
+    }
+
+    try {
+      message.reply(`Fetching replay ${participationId} and calculating logs for Turn ${turnNumber}...`);
+      const rawReplay = await fetchReplay(participationId);
+      const replay = await rawReplay.json();
+
+      const battles = replay["Actions"].filter(action => action["Type"] === 0).map(action => JSON.parse(action["Battle"]));
+      const targetBattle = battles[turnNumber - 1];
+
+      if (!targetBattle) {
+        return message.reply(`Turn ${turnNumber} not found in this replay. Max turns: ${battles.length}`);
+      }
+
+      const debugResult = getDebugBattle(targetBattle);
+      if (debugResult) {
+        const logContent = debugResult.logs.map(log => {
+          if (typeof log === 'string') return log;
+          return log.message || '[Log Object]';
+        }).join('\n');
+        const buffer = Buffer.from(logContent, 'utf-8');
+        await message.reply({
+          content: `**Debug Result for Turn ${turnNumber} (250 Simulations)**\n` +
+            `Player Win: ${debugResult.winrate.player}\n` +
+            `Opponent Win: ${debugResult.winrate.opponent}\n` +
+            `Draw: ${debugResult.winrate.draw}\n` +
+            `\nAttached: Logs from the first simulated battle.`,
+          files: [{ attachment: buffer, name: `battle_logs_turn_${turnNumber}.txt` }]
+        });
+      } else {
+        message.reply("Failed to generate debug logs.");
+      }
+    } catch (err) {
+      console.error(err);
+      message.reply("Error running debug calculation.");
+    }
+    return;
+  } else if (lowerContent.startsWith('!debugseq ')) {
+    if (!DEBUG_MODE) return;
+    const jsonArgument = message.content.slice('!debugseq '.length).trim();
+
+    let replayData;
+    try {
+      replayData = JSON.parse(jsonArgument);
+    } catch (e) {
+      return message.reply("Invalid JSON format. Please provide the data like this: `!debugSeq {\"Pid\":\"...\",\"T\":...}`");
+    }
+
+    const participationId = replayData.Pid;
+    const turnNumber = replayData.T;
+
+    if (!participationId || turnNumber === undefined) {
+      return message.reply("The provided JSON is missing the required `Pid` or `T` (turn number) field.");
+    }
+    if (isNaN(turnNumber) || turnNumber <= 0) {
+      return message.reply("Please provide a valid, positive turn number in the `T` field.");
+    }
+
+    try {
+      message.reply(`Fetching replay ${participationId} and calculating sequence logs up to Turn ${turnNumber}...`);
+      const rawReplay = await fetchReplay(participationId);
+      const replay = await rawReplay.json();
+
+      const battles = replay["Actions"].filter(action => action["Type"] === 0).map(action => JSON.parse(action["Battle"]));
+      const targetBattle = battles[turnNumber - 1];
+
+      if (!targetBattle) {
+        return message.reply(`Turn ${turnNumber} not found in this replay. Max turns: ${battles.length}`);
+      }
+
+      // Slice battles up to the target turn for sequential simulation
+      const battleSequence = battles.slice(0, turnNumber);
+
+      const debugResult = getDebugSequence(battleSequence, turnNumber - 1);
+
+      if (debugResult) {
+        // build summary string
+        let summary = `**Debug Sequence (1..${turnNumber})**\n`;
+        debugResult.results.forEach(r => {
+          summary += `Turn ${r.turn}: Player ${r.player} | Opponent ${r.opponent} | Draw ${r.draw}\n`;
+        });
+
+        const logContent = debugResult.logs.map(log => {
+          if (typeof log === 'string') return log;
+          return log.message || '[Log Object]';
+        }).join('\n');
+        const buffer = Buffer.from(logContent, 'utf-8');
+
+        await message.reply({
+          content: summary + `\nAttached: Logs for Turn ${turnNumber}.`,
+          files: [{ attachment: buffer, name: `battle_logs_turn_${turnNumber}.txt` }]
+        });
+      } else {
+        message.reply("Failed to generate debug logs.");
+      }
+    } catch (err) {
+      console.error(err);
+      message.reply("Error running debug calculation.");
+    }
+    return;
+  } else if (lowerContent.startsWith('!sim ')) {
+    if (!DEBUG_MODE) return;
+    const simArg = trimmedContent.slice('!sim '.length).trim();
+    includeOdds = true;
+    if (!simArg) {
+      return message.reply("Please provide a replay ID. Example: `!sim ABC123`");
+    }
+    if (simArg.startsWith('{') && simArg.endsWith('}')) {
+      try {
+        const replayObject = JSON.parse(simArg);
+        participationId = replayObject["Pid"];
+      } catch (e) {
+        return message.reply("Invalid JSON format. Please provide the data like this: `!sim {\"Pid\":\"...\",\"T\":...}`");
+      }
+    } else {
+      participationId = simArg;
+    }
+    if (!participationId) {
+      return message.reply("Replay Pid not found.");
+    }
   } else {
     return;
   }
