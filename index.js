@@ -4,7 +4,7 @@ const { Client, Events, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, Butt
 const { A_DAY_IN_MS } = require('./lib/config');
 const { login, fetchReplay } = require('./lib/api');
 const { getBattleInfo } = require('./lib/battle');
-const DEBUG_MODE = false;
+const DEBUG_MODE = String(process.env.DEBUG_MODE || '').toLowerCase() === 'true';
 const {
   buildWinPercentReport,
   buildWinPercentReportHeadless,
@@ -55,6 +55,14 @@ client.on('messageCreate', async (message) => {
         throw new Error(`API returned status ${rawReplay.status}`);
       }
       const replay = await rawReplay.json();
+      let buildModel = null;
+      if (replay.GenesisModeModel) {
+        try {
+          buildModel = JSON.parse(replay.GenesisModeModel);
+        } catch (error) {
+          console.warn("Failed to parse GenesisModeModel for calculator link:", error);
+        }
+      }
 
       // --- Find the Specific Battle ---
       const battles = replay.Actions.filter(action => action.Type === 0).map(action => JSON.parse(action.Battle));
@@ -65,7 +73,7 @@ client.on('messageCreate', async (message) => {
       }
 
       // --- Generate and Send Link ---
-      const calculatorState = parseReplayForCalculator(targetBattle);
+      const calculatorState = parseReplayForCalculator(targetBattle, buildModel);
       const calculatorLink = generateCalculatorLink(calculatorState);
 
       if (calculatorLink.length > 512) {
@@ -160,6 +168,14 @@ client.on('messageCreate', async (message) => {
       message.reply(`Fetching replay ${participationId} and calculating logs for Turn ${turnNumber}...`);
       const rawReplay = await fetchReplay(participationId);
       const replay = await rawReplay.json();
+      let buildModel = null;
+      if (replay.GenesisModeModel) {
+        try {
+          buildModel = JSON.parse(replay.GenesisModeModel);
+        } catch (error) {
+          console.warn("Failed to parse GenesisModeModel for debug:", error);
+        }
+      }
 
       const battles = replay["Actions"].filter(action => action["Type"] === 0).map(action => JSON.parse(action["Battle"]));
       const targetBattle = battles[turnNumber - 1];
@@ -168,7 +184,7 @@ client.on('messageCreate', async (message) => {
         return message.reply(`Turn ${turnNumber} not found in this replay. Max turns: ${battles.length}`);
       }
 
-      const debugResult = getDebugBattle(targetBattle);
+      const debugResult = getDebugBattle(targetBattle, buildModel);
       if (debugResult) {
         const logContent = debugResult.logs.map(log => {
           if (typeof log === 'string') return log;
@@ -216,6 +232,14 @@ client.on('messageCreate', async (message) => {
       message.reply(`Fetching replay ${participationId} and calculating sequence logs up to Turn ${turnNumber}...`);
       const rawReplay = await fetchReplay(participationId);
       const replay = await rawReplay.json();
+      let buildModel = null;
+      if (replay.GenesisModeModel) {
+        try {
+          buildModel = JSON.parse(replay.GenesisModeModel);
+        } catch (error) {
+          console.warn("Failed to parse GenesisModeModel for debug sequence:", error);
+        }
+      }
 
       const battles = replay["Actions"].filter(action => action["Type"] === 0).map(action => JSON.parse(action["Battle"]));
       const targetBattle = battles[turnNumber - 1];
@@ -227,7 +251,7 @@ client.on('messageCreate', async (message) => {
       // Slice battles up to the target turn for sequential simulation
       const battleSequence = battles.slice(0, turnNumber);
 
-      const debugResult = getDebugSequence(battleSequence, turnNumber - 1);
+      const debugResult = getDebugSequence(battleSequence, turnNumber - 1, buildModel);
 
       if (debugResult) {
         // build summary string
@@ -290,7 +314,15 @@ client.on('messageCreate', async (message) => {
   const rawReplay = await fetchReplay(participationId);
   const replay = await rawReplay.json();
   const actions = replay["Actions"];
-  const maxLives = replay["GenesisModeModel"] ? JSON.parse(replay["GenesisModeModel"])["MaxLives"] : 5;
+  let buildModel = null;
+  if (replay.GenesisModeModel) {
+    try {
+      buildModel = JSON.parse(replay.GenesisModeModel);
+    } catch (error) {
+      console.warn("Failed to parse GenesisModeModel:", error);
+    }
+  }
+  const maxLives = buildModel?.MaxLives ?? 5;
   const battles = [];
   const calcBattles = [];
   const battleOpponentInfo = [];
@@ -319,9 +351,9 @@ client.on('messageCreate', async (message) => {
   if (includeOdds) {
     try {
       if (useHeadless) {
-        winPercentResults = await buildWinPercentReportHeadless(calcBattles);
+        winPercentResults = await buildWinPercentReportHeadless(calcBattles, buildModel);
       } else {
-        winPercentResults = await buildWinPercentReport(calcBattles);
+        winPercentResults = await buildWinPercentReport(calcBattles, buildModel);
       }
     } catch (error) {
       console.error("Auto-calc failed:", error);

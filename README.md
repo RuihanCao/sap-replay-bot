@@ -19,6 +19,7 @@ npx playwright install
 DISCORD_TOKEN=your_discord_bot_token
 SAP_EMAIL=your_sap_email
 SAP_PASSWORD=your_sap_password
+DEBUG_MODE=false
 ```
 
 4) Enable Discord intents:
@@ -52,7 +53,9 @@ node index.js
   - Loss: light red
   - Draw: light gray
   - Easter egg: find out!
-- Footer shows a luck score based on outcome surprisal: https://docs.google.com/document/d/1-z6vB9joOCZQkVx9J3DPWQ487phBYnOutT-wq3U0-Yg/edit?usp=sharing
+- Footer luck stats (per turn, then averaged across turns):
+  - Total Luck = sum of (actual score - expected score), where actual is 1 (win), 0.5 (draw), 0 (loss), and expected is pWin + 0.5 * pDraw.
+  - Average Luck = mean of luck points across turns (skips turns with a 100% outcome).
 
 ## Notes
 
