@@ -308,6 +308,52 @@ client.on('messageCreate', async (message) => {
     if (!participationId) {
       return message.reply("Replay Pid not found.");
     }
+  } else if (lowerContent.startsWith('!rawbattle ')) {
+    if (!DEBUG_MODE) return;
+    const jsonArgument = message.content.slice('!rawbattle '.length).trim();
+
+    let replayData;
+    try {
+      replayData = JSON.parse(jsonArgument);
+    } catch (e) {
+      return message.reply("Invalid JSON format. Please provide the data like this: `!rawbattle {\"Pid\":\"...\",\"T\":...}`");
+    }
+
+    const participationId = replayData.Pid;
+    const turnNumber = replayData.T;
+
+    if (!participationId || turnNumber === undefined) {
+      return message.reply("The provided JSON is missing the required `Pid` or `T` (turn number) field.");
+    }
+    if (isNaN(turnNumber) || turnNumber <= 0) {
+      return message.reply("Please provide a valid, positive turn number in the `T` field.");
+    }
+
+    try {
+      const rawReplay = await fetchReplay(participationId);
+      if (!rawReplay.ok) {
+        throw new Error(`API returned status ${rawReplay.status}`);
+      }
+      const replay = await rawReplay.json();
+      const battles = replay["Actions"].filter(action => action["Type"] === 0).map(action => JSON.parse(action["Battle"]));
+      const targetBattle = battles[turnNumber - 1];
+
+      if (!targetBattle) {
+        return message.reply(`Turn ${turnNumber} not found in this replay. Max turns: ${battles.length}`);
+      }
+
+      const rawBattleJson = `${JSON.stringify(targetBattle, null, 2)}\n`;
+      const buffer = Buffer.from(rawBattleJson, 'utf-8');
+
+      await message.reply({
+        content: `Raw battle JSON for Turn ${turnNumber}:`,
+        files: [{ attachment: buffer, name: `raw_battle_turn_${turnNumber}.json` }]
+      });
+    } catch (err) {
+      console.error(err);
+      message.reply("Error fetching raw battle JSON.");
+    }
+    return;
   } else {
     return;
   }
