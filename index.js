@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, Events, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { Client, Events, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, Options } = require('discord.js');
 
 const { A_DAY_IN_MS } = require('./lib/config');
 const { login, fetchReplay } = require('./lib/api');
@@ -15,7 +15,20 @@ const {
 } = require('./lib/calculator');
 const { renderReplayImage } = require('./lib/render');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+  makeCache: Options.cacheWithLimits({
+		...Options.DefaultMakeCacheSettings,
+		MessageManager: 1,
+	}),
+  sweepers: {
+		...Options.DefaultSweeperSettings,
+		messages: {
+			interval: 1800,
+			lifetime: 900,
+		}
+	},
+});
 
 client.once(Events.ClientReady, async readyClient => {
   await login();
@@ -412,7 +425,14 @@ client.on('messageCreate', async (message) => {
   if (includeOdds) {
     try {
       if (useHeadless) {
-        winPercentResults = await buildWinPercentReportHeadless(calcBattles, buildModel);
+        let rawResults = await fetch("https://jg4k9imbul.execute-api.us-east-2.amazonaws.com/staging/", {
+          method: "POST",
+          body: JSON.stringify({
+            battleJsonList: calcBattles,
+            buildModel
+          })
+        });
+        winPercentResults = await rawResults.json();
       } else {
         winPercentResults = await buildWinPercentReport(calcBattles, buildModel);
       }
